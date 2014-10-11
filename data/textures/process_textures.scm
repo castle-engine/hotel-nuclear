@@ -88,7 +88,7 @@
 
     (plug-in-normalmap RUN-NONINTERACTIVE
       image drawable
-        0 0.0 60.0
+        0 0.0 10.0
         1 ;; wrap true
         0 0 0 0 0
         1 ;; y-invert true
