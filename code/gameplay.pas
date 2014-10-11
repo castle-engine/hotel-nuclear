@@ -35,7 +35,7 @@ implementation
 
 uses SysUtils,
   CastleUIControls, CastleRectangles, CastleGLUtils, CastleColors,
-  CastleVectors, CastleUtils, CastleRenderer, CastleWindowTouch,
+  CastleVectors, CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
   GameWindow, GameScene, GameMap;
 
 { TGame2DControls ------------------------------------------------------------ }
@@ -65,6 +65,9 @@ begin
       MapRange(Player.Life, 0, Player.MaxLife, 0, R.Height)), 0, R.Height);
     DrawRectangle(R, Vector4Single(1, 0, 0, 0.9));
   end;
+
+  UIFont.Print(R.Right + UIMargin, ContainerHeight - UIMargin - UIFont.RowHeight, Gray,
+    Format('FPS: %f (real : %f)', [Window.Fps.FrameTime, Window.Fps.RealTime]));
 end;
 
 var
