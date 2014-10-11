@@ -19,14 +19,32 @@ plans
 https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=1374662303&dpr=1.09
 
 ------------------------------------------------------------------------------
-todos
+TODOs:
+
+now:
+* alien, human, animal - with anims!
+* gen, room is 7x12
 
 graphics:
 * loading_image="ui/loading.png"
-* adjust lights using view3dscene for nice feeling
+
+g corridor and room:
 * use shadows and shadow maps, easy geom -> make effects!
 * slight animation of light color and position
-* lesser hight for normal maps, too noisy
+
+g room:
+* adjust lights using view3dscene for nicer feeling, nicer attenuation
+* add more textures and colors
+* use window better, show something behind curtain? curtain reshow? or not?
+* use picture frame better, show something on image.
+
+code room:
+* randomize on/off objects visibility
+* randomize colors somewhat?
+* greenish colors for human, red for martian
+* optim: only show room interior when needed
+
+sound use creak sound when transforming
 
 ------------------------------------------------------------------------------
 NP (ok po compo):
@@ -43,3 +61,5 @@ remake to jpg for smaller size, when final packing?
 android fix sounds
 
 implement Focused for other backends and castlecontrol too
+
+note in docs: DirectionalLight.global fix. Send to blender.org.

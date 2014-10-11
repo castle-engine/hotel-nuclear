@@ -81,5 +81,6 @@ initialization
   Window.OnUpdate := @WindowUpdate;
   Window.OnResize := @WindowResize;
   Window.FpsShowOnCaption := true;
+//  Window.AntiAliasing := aa4SamplesNicer; // much slower
   Application.MainWindow := Window;
 end.

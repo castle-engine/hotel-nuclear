@@ -16,7 +16,6 @@
 { Playing the game. }
 unit GamePlay;
 
-
 interface
 
 uses CastleSceneManager, CastlePlayer, CastleLevels;
@@ -37,7 +36,7 @@ implementation
 uses SysUtils,
   CastleUIControls, CastleRectangles, CastleGLUtils, CastleColors,
   CastleVectors, CastleUtils, CastleRenderer, CastleWindowTouch,
-  GameWindow;
+  GameWindow, GameScene, GameMap;
 
 { TGame2DControls ------------------------------------------------------------ }
 
@@ -89,6 +88,7 @@ begin
   GameEnd;
 
   SceneManager := Window.SceneManager;
+  SceneManager.UseGlobalLights := false;
 
   Player := TPlayer.Create(SceneManager);
   SceneManager.Items.Add(Player);
@@ -97,11 +97,12 @@ begin
   Game2DControls := TGame2DControls.Create(SceneManager);
   Window.Controls.InsertFront(Game2DControls);
 
-
   { OpenGL context required from now on }
 
   SceneManager.LoadLevel('hotel');
-  SceneManager.MainScene.Attributes.Shaders := srAlways;
+  SetAttributes(SceneManager.MainScene.Attributes);
+
+  SceneManager.Items.Add(CreateMap(SceneManager));
 
   if DebugSpeed then
     Player.Camera.MoveSpeed := 10;
