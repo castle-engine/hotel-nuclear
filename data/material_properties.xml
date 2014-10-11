@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<properties>
+  <property texture_base_name="Good Textures_001978-2"            normal_map="textures/normal_maps/Good Textures_001978-2.png"       />
+  <property texture_base_name="Good Textures_002856"              normal_map="textures/normal_maps/Good Textures_002856.png"         />
+  <property texture_base_name="Good Textures_005309"              normal_map="textures/normal_maps/Good Textures_005309.png"         />
+  <property texture_base_name="Good Textures_005318"              normal_map="textures/normal_maps/Good Textures_005318.png"         />
+  <property texture_base_name="Good Textures_005337"              normal_map="textures/normal_maps/Good Textures_005337.png"         />
+  <property texture_base_name="paperTextureNo4401_1600x1200"      normal_map="textures/normal_maps/paperTextureNo4401_1600x1200.png" />
+</properties>

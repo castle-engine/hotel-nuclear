@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="hotel_nuclear"
+  standalone_source="code/hotel_nuclear.lpr"
+  android_source="code/hotel_nuclear_android.lpr">
+  <version executable_option="--version" />
+  <package>
+    <include path="COPYING.GPL2.txt" />
+  </package>
+</project>

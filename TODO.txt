@@ -1,0 +1,41 @@
+refs:
+
+elevators: move up/down
+  http://www.google.pl/imgres?imgurl=http%3A%2F%2Fhotels.mebooking.com%2Fwp-content%2Fuploads%2F2011%2F06%2FTS_Yas_Hotel_interior_big-NEW.jpg&imgrefurl=http%3A%2F%2Fhotels.mebooking.com%2Fgcc-hotels%2Fuae%2Fthe-yas-hotel.html&h=377&w=550&tbnid=krKDB4oa91Ft_M%3A&zoom=1&docid=oaeI0XwSyU-dKM&ei=3Cg5VO7RCMfVPPScgIgC&tbm=isch&ved=0CCAQMygCMAI&iact=rc&uact=3&dur=1654&page=1&start=0&ndsp=27
+
+http://www.google.pl/imgres?imgurl=http%3A%2F%2Fcdn.archinect.net%2Fimages%2F514x%2Faf%2Faf0c2ca442e1caa832cd1ee40b3552c1.jpg&imgrefurl=http%3A%2F%2Farchinect.com%2Fnews%2Farticle%2F86293024%2Fnine-hours-in-a-capsule-sleeping-in-a-sci-fi-hotel-that-wants-you-to-leave&h=343&w=514&tbnid=w9G191s8zjjiIM%3A&zoom=1&docid=nujsTeADa_n4XM&ei=3Cg5VO7RCMfVPPScgIgC&tbm=isch&ved=0CF0QMyg2MDY&iact=rc&uact=3&dur=1323&page=2&start=27&ndsp=36
+http://www.google.pl/imgres?imgurl=http%3A%2F%2Ffc08.deviantart.net%2Ffs51%2Ff%2F2009%2F321%2F1%2Fc%2FSpace_hotel_v2_by_Dekus.jpg&imgrefurl=http%3A%2F%2Fsiamon89.deviantart.com%2Fart%2FEden-Archives-3-310437474&h=720&w=1024&tbnid=J3MlZRrB7ef0MM%3A&zoom=1&docid=F2SuYpVG_bbQ9M&ei=6ig5VLXeDcbfOKSTgKgD&tbm=isch&ved=0CDQQMygsMCw4ZA&iact=rc&uact=3&dur=1428&page=5&start=132&ndsp=35
+http://www.google.pl/imgres?imgurl=http%3A%2F%2Fsociorocketnewsen.files.wordpress.com%2F2014%2F06%2Fa-brand-new-capsule-hotel-just-opened-in-malaysia5.jpg%253Fw%253D580%2526h%253D359&imgrefurl=http%3A%2F%2Fen.rocketnews24.com%2F2014%2F06%2F20%2Fa-brand-new-capsule-hotel-just-opened-in-malaysia%2F&h=360&w=580&tbnid=2vFcykZ2fF69EM%3A&zoom=1&docid=oVJ9T86Vo1mw0M&ei=_Cg5VNbzFMH4OoO8gbAI&tbm=isch&ved=0CBQQMygMMAw4yAE&iact=rc&uact=3&dur=639&page=7&start=203&ndsp=34
+
+entrance
+http://www.google.pl/imgres?imgurl=http%3A%2F%2Fwww.universityparent.com%2Fwp-content%2Fuploads%2Fmigrated%2Fentry%255B1%255D.JPG&imgrefurl=http%3A%2F%2Fwww.universityparent.com%2Fmassachusetts-institute-of-technology%2Fguide%2Fhotels%2F&h=257&w=350&tbnid=ZZAnzcyt5OxrHM%3A&zoom=1&docid=3xdGUlgCA0zDCM&ei=aSk5VPH-DYn7PO3JgfAO&tbm=isch&ved=0CDkQMygJMAk&iact=rc&uact=3&dur=532&page=1&start=0&ndsp=20
+ring http://www.google.pl/imgres?imgurl=http%3A%2F%2Fwww.hotel-monopole.nl%2Fimages%2Freception.jpg&imgrefurl=http%3A%2F%2Fwww.hotel-monopole.nl%2Ffacilities.php&h=1080&w=1920&tbnid=MqUavOhO2kcbEM%3A&zoom=1&docid=qreuO1fIjAPeRM&ei=eik5VOGiDMf0OrCTgMAN&tbm=isch&ved=0CC8QMygnMCc4ZA&iact=rc&uact=3&dur=404&page=5&start=111&ndsp=30
+
+room
+generic http://www.google.pl/imgres?imgurl=http%3A%2F%2Fcache.carlsonhotels.com%2Fow-cms%2Frad%2Fimages%2Fhotels%2FNEPKATHM%2FNewCMS%2FGallery%2Fpremium-650.jpg&imgrefurl=http%3A%2F%2Fwww.radisson.com%2Fkathmandu-hotel-np%2Fnepkathm&h=370&w=650&tbnid=rV9kQfwYAi82KM%3A&zoom=1&docid=jr0LlvS32HWo6M&ei=aSk5VPH-DYn7PO3JgfAO&tbm=isch&ved=0CF8QMygmMCY&iact=rc&uact=3&dur=268&page=2&start=20&ndsp=31
+colors nice http://www.google.pl/imgres?imgurl=http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F0%2F07%2FHotel-suite-living-room.jpg&imgrefurl=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FSuite_%28hotel%29&h=2304&w=3356&tbnid=ZPxQUUM-S6U9NM%3A&zoom=1&docid=NHvpF0barVI35M&ei=pyk5VLObEoH3O7PvgKgH&tbm=isch&ved=0CDoQMygHMAc&iact=rc&uact=3&dur=280&page=1&start=0&ndsp=18
+  http://www.google.pl/imgres?imgurl=http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fb%2Fb4%2FHotel_Suite_-_Living_Room_1.JPG&imgrefurl=http%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FFile%3AHotel_Suite_-_Living_Room_1.JPG&h=2448&w=3264&tbnid=ZMm-5licmjcZhM%3A&zoom=1&docid=IjFSHqed3WoL2M&ei=pyk5VLObEoH3O7PvgKgH&tbm=isch&ved=0CFAQMygUMBQ&iact=rc&uact=3&dur=313&page=2&start=18&ndsp=30
+plans
+https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=1374662303&dpr=1.09
+
+------------------------------------------------------------------------------
+todos
+
+graphics:
+* loading_image="ui/loading.png"
+* adjust lights using view3dscene for nice feeling
+* use shadows and shadow maps, easy geom -> make effects!
+
+------------------------------------------------------------------------------
+NP (ok po compo):
+
+fill AUTHORS.txt for data, see my bookmarks
+
+android:
+* larger touch controls (do we ever set dpi on android?)
+* fix bump mapping in engine
+* bake stuff, to have local lights visible
+
+remake to jpg for smaller size, when final packing?
+
+android fix sounds

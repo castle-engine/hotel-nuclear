@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<level
+  name="hotel"
+  scene="hotel.x3dv"
+  title="Hotel"
+  number="1"
+  type="Level"
+  placeholders="blender"
+>
+  <prepare_resources>
+    <!-- <resource name="Harpy" /> -->
+    <!-- <resource name="Golem" /> -->
+  </prepare_resources>
+</level>

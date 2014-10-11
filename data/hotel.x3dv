@@ -1,0 +1,19 @@
+#X3D V3.2 utf8
+PROFILE Interchange
+
+KambiNavigationInfo {
+  type [ "WALK", "ANY" ]
+  speed 10
+  headlight FALSE
+}
+
+# Camera settings "encoded" in the VRML/X3D declaration below :
+# direction 0.99355655908584595 -1.6420282136357959E-15 0.11333750933408737
+# up -4.3429750462564698E-8 1 -4.954139321000639E-9
+# gravityUp 0 1 0
+Viewpoint {
+  position -6.559018611907959 1.7272952795028687 0.75340914726257324
+  orientation -1.6526772177277954E-15 -1.0000001192092896 0 1.6843777894973755
+}
+
+Inline { url "hotel.x3d" }
