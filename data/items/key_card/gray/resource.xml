@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<resource
+  name="KeyCardGray"
+  type="Item"
+  caption="Gray Key Card"
+  image="gray.png"
+  fall_speed="0.0"
+>
+  <model>
+    <base url="gray.x3d"/>
+  </model>
+</resource>

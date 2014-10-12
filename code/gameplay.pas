@@ -180,7 +180,7 @@ begin
   SceneManager.LoadLevel('hotel');
   SetAttributes(SceneManager.MainScene.Attributes);
 
-  SceneManager.Items.Add(CreateMap(SceneManager));
+  SceneManager.Items.Add(CreateMap(SceneManager.Items, SceneManager));
 
   if DebugSpeed then
     Player.Camera.MoveSpeed := 10;

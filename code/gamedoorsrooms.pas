@@ -19,7 +19,7 @@ unit GameDoorsRooms;
 interface
 
 uses Classes,
-  Castle3D, CastleScene, X3DNodes, CastleColors,
+  Castle3D, CastleScene, X3DNodes, CastleColors, CastleItems,
   CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GamePossessed;
 
@@ -28,6 +28,17 @@ const
   RoomSizeZ = 12.0;
 
 type
+  TKey = (
+    keyAqua,
+    keyBlack,
+    keyBlue,
+    keyGray,
+    keyGreen,
+    keyRed,
+    keyWhite,
+    keyYellow
+  );
+
   TRoom = class(T3DTransform)
   strict private
     FInside: TCastleScene;
@@ -37,14 +48,21 @@ type
     ColorizeIntensity: Single;
     ColorizeColor: TCastleColor;
     { @groupEnd }
+    FHasKey: boolean;
+    FKey: TKey;
+    FRotateZ: boolean;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
     procedure ColorizeNode(Node: TX3DNode);
   public
-    constructor Create(const AOwner: TComponent; const X, Z: Single; const RotateZ: boolean); reintroduce;
+    constructor Create(const AWorld: T3DWorld; const AOwner: TComponent;
+      const X, Z: Single; const ARotateZ: boolean); reintroduce;
     property InsideExists: boolean read GetInsideExists write SetInsideExists;
     function PlayerInside: boolean;
     property Ownership: TPossessed read FOwnership;
+    property HasKey: boolean read FHasKey;
+    property Key: TKey read FKey;
+    procedure AddKey(const AWorld: T3DWorld);
   end;
 
   TDoor = class(T3DLinearMoving)
@@ -71,15 +89,27 @@ var
   { Room where player currently is. }
   CurrentRoom: TRoom;
 
+const
+  KeyName: array [TKey] of string = (
+    'Aqua',
+    'Black',
+    'Blue',
+    'Gray',
+    'Green',
+    'Red',
+    'White',
+    'Yellow'
+  );
+
 implementation
 
 uses SysUtils,
-  CastleGameNotifications, CastleSoundEngine, X3DFields,
+  CastleGameNotifications, CastleSoundEngine, X3DFields, CastleResources,
   GameScene, GameSound, GamePlay;
 
 { TRoom ---------------------------------------------------------------------- }
 
-constructor TRoom.Create(const AOwner: TComponent; const X, Z: Single; const RotateZ: boolean);
+constructor TRoom.Create(const AWorld: T3DWorld; const AOwner: TComponent; const X, Z: Single; const ARotateZ: boolean);
 
   procedure ColorizeScene(const Scene: TCastleScene; const Color: TCastleColor; const Intensity: Single);
   begin
@@ -106,7 +136,13 @@ begin
     FOwnership := posAlien else
     FOwnership := posHuman;
 
-  if RotateZ then
+  { TODO: key should be randomized globally. Also check for solvability. }
+  R := Random;
+  FHasKey := R < 0.5;
+  FKey := TKey(Random(Ord(High(TKey)) + 1));
+
+  FRotateZ := ARotateZ;
+  if ARotateZ then
   begin
     Rotation := Vector4Single(0, 1, 0, Pi);
     Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
@@ -147,6 +183,21 @@ begin
   SetAttributes(DoorScene.Attributes);
   DoorScene.Spatial := [ssRendering, ssDynamicCollisions];
   DoorScene.ProcessEvents := true;
+
+  AddKey(AWorld);
+end;
+
+procedure TRoom.AddKey(const AWorld: T3DWorld);
+var
+  Position: TVector3Single;
+  ItemResource: TItemResource;
+begin
+  if HasKey then
+  begin
+    Position := LocalToOutside(Vector3Single(-0.385276, 0.625180, 10.393058));
+    ItemResource := Resources.FindName('KeyCard' + KeyName[Key]) as TItemResource;
+    ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
+  end;
 end;
 
 function TRoom.PlayerInside: boolean;

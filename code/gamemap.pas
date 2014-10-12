@@ -21,26 +21,26 @@ interface
 uses Classes,
   Castle3D, CastleScene;
 
-function CreateMap(const Owner: TComponent): T3DTransform;
+function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
 
 implementation
 
 uses CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GameScene, GameSound, GameDoorsRooms, GamePlay;
 
-function CreateMap(const Owner: TComponent): T3DTransform;
+function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
 const
   CorridorSize = 3.0;
 begin
   Result := T3DTransform.Create(Owner);
 
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 0, RoomSizeZ * 0, false));
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 1, RoomSizeZ * 0, false));
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 2, RoomSizeZ * 0, false));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 0, RoomSizeZ * 0, false));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 1, RoomSizeZ * 0, false));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 2, RoomSizeZ * 0, false));
 
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 0, -RoomSizeZ * 1 - CorridorSize, true));
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 1, -RoomSizeZ * 1 - CorridorSize, true));
-  Result.Add(TRoom.Create(Owner, RoomSizeX * 2, -RoomSizeZ * 1 - CorridorSize, true));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 0, -RoomSizeZ * 1 - CorridorSize, true));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 1, -RoomSizeZ * 1 - CorridorSize, true));
+  Result.Add(TRoom.Create(AWorld, Owner, RoomSizeX * 2, -RoomSizeZ * 1 - CorridorSize, true));
 end;
 
 end.

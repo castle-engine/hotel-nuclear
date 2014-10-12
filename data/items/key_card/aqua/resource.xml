@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<resource
+  name="KeyCardAqua"
+  type="Item"
+  caption="Aqua Key Card"
+  image="aqua.png"
+  fall_speed="0.0"
+>
+  <model>
+    <base url="aqua.x3d"/>
+  </model>
+</resource>

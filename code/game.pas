@@ -41,6 +41,15 @@ begin
   Resources.AddFromFile(ApplicationData('creatures/human/resource.xml'));
   Resources.AddFromFile(ApplicationData('creatures/alien/resource.xml'));
 
+  Resources.AddFromFile(ApplicationData('items/key_card/aqua/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/black/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/blue/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/gray/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/green/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/red/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/white/resource.xml'));
+  Resources.AddFromFile(ApplicationData('items/key_card/yellow/resource.xml'));
+
   //Levels.LoadFromFiles; // cannot search recursively in Android assets
   Levels.AddFromFile(ApplicationData('level.xml'));
 
