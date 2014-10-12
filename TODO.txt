@@ -25,8 +25,6 @@ graphics:
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.
   for now removed headlight.
-* death anim better, it's just funny now
-* put there keys from README too
 * better anims? at least largely remake existing
 * texture on alien/human more sensible
 
