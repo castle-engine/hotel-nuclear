@@ -25,7 +25,8 @@ implementation
 
 uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
   CastleControls, CastlePrecalculatedAnimation, CastleGLImages, CastleConfig,
-  CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils, CastleMaterialProperties,
+  CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils,
+  CastleMaterialProperties, CastleResources,
   GamePlay;
 
 { One-time initialization. }
@@ -35,7 +36,8 @@ begin
   MaterialProperties.URL := ApplicationData('material_properties.xml');
 
   //Resources.LoadFromFiles; // cannot search recursively in Android assets
-  //Resources.AddFromFile(ApplicationData('creatures/light/resource.xml'));
+  Resources.AddFromFile(ApplicationData('creatures/human/resource.xml'));
+  Resources.AddFromFile(ApplicationData('creatures/alien/resource.xml'));
 
   //Levels.LoadFromFiles; // cannot search recursively in Android assets
   Levels.AddFromFile(ApplicationData('level.xml'));

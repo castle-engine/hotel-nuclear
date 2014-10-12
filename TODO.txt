@@ -22,7 +22,7 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* alien, human - with anims of running, would be nice to also have die
+* doors opening, only as a non-ghost
 * ai of hunting, possessing
 * enter a room: colorize room, for alien or earth.
 * pickup keys, show picked up

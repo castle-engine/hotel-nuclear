@@ -8,7 +8,7 @@
   placeholders="blender"
 >
   <prepare_resources>
-    <!-- <resource name="Harpy" /> -->
-    <!-- <resource name="Golem" /> -->
+     <resource name="Alien" />
+     <resource name="Human" />
   </prepare_resources>
 </level>

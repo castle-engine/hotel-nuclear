@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<resource
+  name="Alien"
+  type="WalkAttack"
+
+  move_speed="1.4"
+  default_max_life="100.0"
+  middle_height="0.8"
+  preferred_distance="1000.0"
+  receive_shadow_volumes="False"
+>
+  <model>
+    <idle   url="idle.kanim"   />
+    <walk   url="walk.kanim"   />
+    <die    url="die.kanim"    />
+    <hurt   url="hurt.kanim"   />
+    <!-- <attack url="attack.kanim" /> -->
+  </model>
+  <run_away life="1.0"/>
+</resource>

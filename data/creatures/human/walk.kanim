@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<animation>
+  <frame url="walk_0001.x3d.gz" time="0.000000" />
+  <frame url="walk_0006.x3d.gz" time="0.200000" />
+  <frame url="walk_0011.x3d.gz" time="0.400000" />
+  <frame url="walk_0016.x3d.gz" time="0.600000" />
+  <frame url="walk_0017.x3d.gz" time="0.640000" />
+</animation>
