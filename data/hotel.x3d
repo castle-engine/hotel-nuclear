@@ -23,7 +23,7 @@
 			<DirectionalLight DEF="LA_Sun_001"
 			                  ambientIntensity="0.0000"
 			                  color="1.0000 1.0000 1.0000"
-			                  intensity="0.5714"
+			                  intensity="0.2229"
 			                  direction="-0.0000 -0.0000 -1.0000"
 			                  global="TRUE"
 			                  />
@@ -31,12 +31,12 @@
 		<Transform DEF="Sun_TRANSFORM"
 		           translation="-33.816185 18.051643 40.298912"
 		           scale="1.000000 1.000000 1.000000"
-		           rotation="-0.097637 -0.605059 -0.790171 2.186491"
+		           rotation="-0.315375 -0.499050 -0.807148 1.908847"
 		           >
 			<DirectionalLight DEF="LA_Sun"
 			                  ambientIntensity="0.0000"
 			                  color="1.0000 1.0000 1.0000"
-			                  intensity="0.5714"
+			                  intensity="0.2229"
 			                  direction="-0.0000 0.0000 -1.0000"
 			                  global="TRUE"
 			                  />
