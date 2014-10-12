@@ -208,8 +208,12 @@ begin
     Window.TouchInterface := etciNone;
   end else
   begin
+    { TODO: for some reason, this is broken since progress bar.
+      Instead set TouchInterface explicitly.
     Window.AutomaticWalkTouchCtl := etciCtlWalkCtlRotate;
-    Window.AutomaticTouchInterface := true;
+    Window.AutomaticTouchInterface := true; }
+
+    Window.TouchInterface := etciCtlWalkCtlRotate;
   end;
 
   ResourceAlien := Resources.FindName('Alien') as TWalkAttackCreatureResource;
