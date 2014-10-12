@@ -31,7 +31,7 @@ var
     {$ifdef iOS}     false {$else}
                      true {$endif} {$endif};
 
-procedure GameBegin;
+procedure GameBegin(const Level: Cardinal);
 procedure GameUpdate(const SecondsPassed: Single);
 
 function GetPossessed: TPossessed;
@@ -44,7 +44,8 @@ uses SysUtils,
   CastleUIControls, CastleRectangles, CastleGLUtils, X3DNodes, CastleLog,
   CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
   CastleSoundEngine, CastleCreatures, CastleResources, CastleGameNotifications,
-  GameWindow, GameScene, GameMap, GameDoorsRooms, GameSound;
+  GameWindow, GameScene, GameMap, GameDoorsRooms, GameSound,
+  GameRestarting;
 
 var
   FPossessed: TPossessed;
@@ -122,7 +123,8 @@ begin
   LineNum := 1;
 
   UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight), Gray,
-    Format('FPS: %f (real : %f)', [Window.Fps.FrameTime, Window.Fps.RealTime]));
+    Format('FPS: %f (real : %f). Level: %d / %d',
+    [Window.Fps.FrameTime, Window.Fps.RealTime, Level, MaxLevel]));
   Inc(LineNum);
 
   UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
@@ -162,7 +164,7 @@ var
 var
   ResourceAlien, ResourceHuman: TWalkAttackCreatureResource;
 
-procedure GameBegin;
+procedure GameBegin(const Level: Cardinal);
 
   { Make sure to free and clear all stuff started during the game. }
   procedure GameEnd;
@@ -171,7 +173,7 @@ procedure GameBegin;
     FreeAndNil(Player);
 
     { free 2D stuff (including SceneManager and viewports) }
-    FreeAndNil(SceneManager);
+    // FreeAndNil(SceneManager); // keep SceneManager, next GameBegin will use it
 
     Notifications.Exists := false;
   end;
@@ -193,7 +195,7 @@ begin
   SceneManager.LoadLevel('hotel');
   SetAttributes(SceneManager.MainScene.Attributes);
 
-  SceneManager.Items.Add(CreateMap(SceneManager.Items, SceneManager));
+  SceneManager.Items.Add(CreateMap(Level, SceneManager.Items, SceneManager));
 
   if DebugSpeed then
     Player.Camera.MoveSpeed := 10;

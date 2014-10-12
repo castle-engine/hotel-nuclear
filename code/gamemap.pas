@@ -21,14 +21,16 @@ interface
 uses Classes,
   Castle3D, CastleScene;
 
-function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
+function CreateMap(const Level: Cardinal;
+  const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
 
 implementation
 
 uses CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GameScene, GameSound, GameDoorsRooms, GamePlay;
 
-function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
+function CreateMap(const Level: Cardinal;
+  const AWorld: T3DWorld; const Owner: TComponent): T3DTransform;
 
   procedure TestRoomCreate(const AWorld: T3DWorld;
     const AOwner: TComponent; const X, Z: Single; const ARotateZ: boolean);
@@ -48,6 +50,8 @@ var
   X, Z: Integer;
 begin
   Result := T3DTransform.Create(Owner);
+
+  // TODO use level
 
   for X := 0 to RoomsX - 1 do
     for Z := 0 to RoomsZ - 1 do

@@ -28,7 +28,7 @@ uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
   CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils, CastleScene,
   CastleMaterialProperties, CastleResources, CastleGameNotifications, CastleNotifications,
   CastleSceneCore,
-  GamePlay, GameSound, GameDoorsRooms, GameScene, GamePossessed;
+  GamePlay, GameSound, GameDoorsRooms, GameScene, GamePossessed, GameRestarting;
 
 { One-time initialization. }
 procedure ApplicationInitialize;
@@ -60,6 +60,8 @@ begin
   Notifications.MaxMessages := 1; // otherwise Notifications.PositionX, PositionY would not work perfectly
   Notifications.HorizontalMargin := 0;
   Notifications.VerticalMargin := 0;
+
+  ButtonsAdd;
 end;
 
 procedure WindowOpen(Container: TUIContainer);
@@ -83,16 +85,18 @@ begin
         ColorizeScene(InsideTemplate[RoomType], PossessedColor[posHuman], 0.5);
     end;
 
-  GameBegin;
+  GameBegin(0);
 end;
 
 procedure WindowResize(Container: TUIContainer);
 begin
+  ButtonsResize;
 end;
 
 procedure WindowUpdate(Container: TUIContainer);
 begin
   GameUpdate(Container.Fps.UpdateSecondsPassed);
+  ButtonsUpdate;
 end;
 
 procedure WindowPress(Container: TUIContainer; const Event: TInputPressRelease);
