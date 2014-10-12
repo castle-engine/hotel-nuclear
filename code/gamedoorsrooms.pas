@@ -221,7 +221,7 @@ begin
   Door.Add(DoorScene);
   DoorScene.Load(ApplicationData('door.x3dv'));
   if FRoomType = rtAlien then
-    ColorizeScene(DoorScene, PossessedColor[posAlien], 0.5) else
+    ColorizeScene(DoorScene, PossessedColor[posAlien], 0.95) else
   if FRoomType = rtHuman then
     ColorizeScene(DoorScene, PossessedColor[posHuman], 0.5);
   SetAttributes(DoorScene.Attributes);
@@ -354,33 +354,46 @@ begin
   Result := inherited;
   if Result then Exit;
 
-  if (Distance < DistanceToInteract) and
+  if Distance > DistanceToInteract then
+  begin
+    Notifications.Show('Too far to open door.');
+    SoundEngine.Sound(stPlayerInteractFailed);
+  end else
+  if not CompletelyBeginPosition then
+  begin
      { Only if the door is completely closed
        (and not during closing right now) we allow player to open it. }
-     CompletelyBeginPosition and
+    // do not show or beep, too often
+    // Notifications.Show('Wait for door to close.');
+    // SoundEngine.Sound(stPlayerInteractFailed);
+  end else
+  if CurrentOpenDoor <> nil then
+  begin
      { Only if all doors are open now, allow opening.
        This allows to optimize room display, as only 1 room can
        be visible at a time. }
-     (CurrentOpenDoor = nil) then
+    Notifications.Show('Wait for other doors to close.');
+    SoundEngine.Sound(stPlayerInteractFailed);
+  end else
+  if Possessed = posGhost then
   begin
-    if Possessed = posGhost then
-    begin
-      Notifications.Show('Cannot open door when not material. Possess someone first.');
-      SoundEngine.Sound(stPlayerInteractFailed);
-    end else
-    if Room.HasRequiredKey and
-       (Player.Inventory.FindResource(KeyResource(Room.RequiredKey)) = -1 ) then
-    begin
-      Notifications.Show(Format('You need "%s" key card to open this room. Look for it in other rooms.', [KeyName[Room.RequiredKey]]));
-      SoundEngine.Sound(stPlayerInteractFailed);
-    end else
-    begin
-      GoEndPosition;
-      CurrentOpenDoor := Self;
-      Room.InsideExists := true;
-    end;
-    Result := true;
+    Notifications.Show('Cannot open door when not material. Possess someone first.');
+    SoundEngine.Sound(stPlayerInteractFailed);
+  end else
+  if Room.HasRequiredKey and
+     (Player.Inventory.FindResource(KeyResource(Room.RequiredKey)) = -1 ) then
+  begin
+    Notifications.Show(Format('You need "%s" key card to open this room. Search other rooms to find it.', [KeyName[Room.RequiredKey]]));
+    SoundEngine.Sound(stPlayerInteractFailed);
+  end else
+  begin
+    Notifications.Clear; // remove old messages, to not confuse the player: it is ok to open now
+    GoEndPosition;
+    CurrentOpenDoor := Self;
+    Room.InsideExists := true;
   end;
+
+  Result := true;
 end;
 
 end.
