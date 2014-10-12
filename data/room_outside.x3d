@@ -15,66 +15,6 @@
 		            groundColor="0.051 0.051 0.051"
 		            skyColor="0.051 0.051 0.051"
 		            />
-		<Transform DEF="room_outside_001_TRANSFORM"
-		           translation="-3.680488 1.487381 0.072530"
-		           scale="1.021618 1.021618 1.021618"
-		           rotation="0.000000 0.707107 0.707107 3.141593"
-		           >
-			<Transform DEF="room_outside_001_ifs_TRANSFORM"
-			           translation="-0.000000 -0.000000 -0.000000"
-			           scale="1.000000 1.000000 1.000000"
-			           rotation="1.000000 0.000000 0.000000 0.000000"
-			           >
-				<Group DEF="group_ME_Cube_004">
-					<Shape>
-						<Appearance>
-							<ImageTexture DEF="IM_door_tile_empty_png"
-							              url='"textures/door_tile_empty.png" "door_tile_empty.png"'
-							              />
-							<Material DEF="MA_door_up"
-							          diffuseColor="0.800 0.800 0.800"
-							          specularColor="0.000 0.000 0.000"
-							          emissiveColor="0.000 0.000 0.000"
-							          ambientIntensity="0.333"
-							          shininess="0.098"
-							          transparency="0.0"
-							          />
-						</Appearance>
-						<IndexedFaceSet solid="false"
-						                texCoordIndex="0 1 2 3 -1 "
-						                coordIndex="2 3 5 4 -1 "
-						                >
-							<Coordinate DEF="coords_ME_Cube_004"
-							            point="1.240139 0.000000 -1.460940 -1.240139 0.000000 -1.460940 -1.240139 -0.000000 1.459839 1.240139 -0.000000 1.459839 -1.240139 -0.000000 0.000000 1.240139 -0.000000 -0.000000 "
-							            />
-							<TextureCoordinate point="0.0000 1.0000 1.0000 1.0000 1.0000 0.0000 0.0000 0.0000 " />
-						</IndexedFaceSet>
-					</Shape>
-					<Shape>
-						<Appearance>
-							<ImageTexture DEF="IM_Sandstone-Ornament-qubodup-PaataVardanashvili-CCBY3_png"
-							              url='"textures/Sandstone-Ornament-qubodup-PaataVardanashvili-CCBY3.png" "Sandstone-Ornament-qubodup-PaataVardanashvili-CCBY3.png"'
-							              />
-							<Material DEF="MA_door_down"
-							          diffuseColor="0.800 0.800 0.800"
-							          specularColor="0.000 0.000 0.000"
-							          emissiveColor="0.000 0.000 0.000"
-							          ambientIntensity="0.333"
-							          shininess="0.098"
-							          transparency="0.0"
-							          />
-						</Appearance>
-						<IndexedFaceSet solid="false"
-						                texCoordIndex="0 1 2 3 -1 "
-						                coordIndex="0 1 4 5 -1 "
-						                >
-							<Coordinate USE="coords_ME_Cube_004" />
-							<TextureCoordinate point="1.0000 1.0000 0.0000 1.0000 0.0000 0.0000 1.0000 0.0000 " />
-						</IndexedFaceSet>
-					</Shape>
-				</Group>
-			</Transform>
-		</Transform>
 		<Transform DEF="room_outside_TRANSFORM"
 		           translation="-2.174333 5.295387 5.947393"
 		           scale="1.000000 1.000000 1.000000"

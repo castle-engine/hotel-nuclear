@@ -120,6 +120,8 @@ begin
     Window.AutomaticWalkTouchCtl := etciCtlWalkCtlRotate;
     Window.AutomaticTouchInterface := true;
   end;
+
+  AllDoorsClosed := true;
 end;
 
 end.

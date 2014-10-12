@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Configuration of game sounds. -->
+<sounds>
+  <sound name="door_open" default_importance="level_event" />
+  <sound name="door_close" default_importance="level_event" />
+  <sound name="squish" default_importance="level_event" />
+</sounds>

@@ -27,13 +27,15 @@ uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
   CastleControls, CastlePrecalculatedAnimation, CastleGLImages, CastleConfig,
   CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils,
   CastleMaterialProperties, CastleResources,
-  GamePlay;
+  GamePlay, GameSound;
 
 { One-time initialization. }
 procedure ApplicationInitialize;
 begin
   Progress.UserInterface := WindowProgressInterface;
   MaterialProperties.URL := ApplicationData('material_properties.xml');
+
+  InitializeSound;
 
   //Resources.LoadFromFiles; // cannot search recursively in Android assets
   Resources.AddFromFile(ApplicationData('creatures/human/resource.xml'));

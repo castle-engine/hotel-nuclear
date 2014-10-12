@@ -22,7 +22,6 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* doors opening, only as a non-ghost
 * ai of hunting, possessing
 * enter a room: colorize room, for alien or earth.
 * pickup keys, show picked up
@@ -45,6 +44,7 @@ now:
 * generate whole floor, use borders to delimit
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.
+* doors opening only as a non-ghost
 
 graphics:
 * loading_image="ui/loading.png"
@@ -89,3 +89,5 @@ remake all textures to jpg for smaller size, when final packing?
 implement Focused for other backends and castlecontrol too
 
 note in docs: DirectionalLight.global fix. Send to blender.org.
+
+AnimationTime fix needed also in castle1?
