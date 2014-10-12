@@ -4,7 +4,7 @@
   name="KeyCardBlue"
   type="Item"
   caption="Blue Key Card"
-  image="blue.png"
+  image="blue_small.png"
   fall_speed="0.0"
 >
   <model>

@@ -88,6 +88,8 @@ type
 
 procedure TGame2DControls.Render;
 const
+  InventoryImageSize = 128;
+const
   PossessedName: array [TPossessed] of string =
   ( 'immaterial ghost (not possessing anyone now)',
     'martian',
@@ -98,8 +100,9 @@ const
     'earthling' );
 var
   R: TRectangle;
-  LineNum: Integer;
+  LineNum, I, X, Y: Integer;
   Color: TCastleColor;
+  S: string;
 begin
   if Player.Dead then
     GLFadeRectangle(ContainerRect, Red, 1.0) else
@@ -123,7 +126,7 @@ begin
   Inc(LineNum);
 
   UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
-    PossessedColor[Possessed], PossessedName[Possessed]);
+    Color, PossessedName[Possessed]);
   Inc(LineNum);
 
   { note: show this even when Player.Dead, since that's where you usually have time to read this... }
@@ -131,7 +134,7 @@ begin
      (CurrentRoom.Ownership <> Possessed) then
   begin
     UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
-      PossessedColor[Possessed], Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
+      Color, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
       [PossessedNameShort[CurrentRoom.Ownership], PossessedNameShort[Possessed] ]));
     Inc(LineNum);
   end;
@@ -139,6 +142,15 @@ begin
   Notifications.PositionX := R.Right + UIMargin;
   Notifications.PositionY := - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - UIMargin;
   Inc(LineNum);
+
+  Y := ContainerHeight - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - InventoryImageSize;
+  for I := 0 to Player.Inventory.Count - 1 do
+  begin
+    X := UIMargin + I * (InventoryImageSize + UIMargin);
+    Player.Inventory[I].Resource.GLImage.Draw(X, Y);
+    S := Player.Inventory[I].Resource.Caption;
+    UIFontSmall.Print(X, Y - UIFontSmall.RowHeight, Color, S);
+  end;
 end;
 
 var

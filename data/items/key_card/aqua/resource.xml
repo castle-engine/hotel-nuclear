@@ -4,7 +4,7 @@
   name="KeyCardAqua"
   type="Item"
   caption="Aqua Key Card"
-  image="aqua.png"
+  image="aqua_small.png"
   fall_speed="0.0"
 >
   <model>
