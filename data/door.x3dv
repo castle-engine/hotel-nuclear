@@ -1,0 +1,27 @@
+#X3D V3.2 utf8
+PROFILE Interchange
+
+Transform {
+  rotation 0 1 0 3.14
+  children Transform {
+    translation 3.680488 2.6 -0.07
+    children Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+          specularColor 0 0 0
+        }
+      }
+      geometry DEF DoorText Text {
+        fontStyle DEF FS FontStyle {
+          size 0.21
+          justify "MIDDLE"
+          style "BOLD"
+        }
+        string ["This room", "does not contain a key.", "Hint: the left room contains", "a key only if the right room", "contains a key."]
+      }
+    }
+  }
+}
+
+Inline { url "door.x3d" }

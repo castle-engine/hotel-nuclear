@@ -53,20 +53,28 @@ type
     FHasRequiredKey: boolean;
     FRequiredKey: TKey;
     FRotateZ: boolean;
+    Text: TStringList;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
     procedure ColorizeNode(Node: TX3DNode);
   public
-    constructor Create(const AWorld: T3DWorld; const AOwner: TComponent;
+    constructor Create(const AOwner: TComponent;
       const X, Z: Single; const ARotateZ: boolean); reintroduce;
+    destructor Destroy; override;
     property InsideExists: boolean read GetInsideExists write SetInsideExists;
     function PlayerInside: boolean;
+
     property Ownership: TPossessed read FOwnership;
-    property HasKey: boolean read FHasKey;
-    property Key: TKey read FKey;
-    property HasRequiredKey: boolean read FHasRequiredKey;
-    property RequiredKey: TKey read FRequiredKey;
-    procedure AddKey(const AWorld: T3DWorld);
+
+    property HasKey: boolean read FHasKey write FHasKey;
+    property Key: TKey read FKey write FKey;
+    property HasRequiredKey: boolean read FHasRequiredKey write FHasRequiredKey;
+    property RequiredKey: TKey read FRequiredKey write FRequiredKey;
+
+    { Set above properties and then call @link(Instantiate).
+      AWorld is used to insert eventual items to the world, items for now
+      must be top-level in scene magager hierarchy. }
+    procedure Instantiate(const AWorld: T3DWorld);
   end;
 
   TDoor = class(T3DLinearMoving)
@@ -118,7 +126,42 @@ end;
 
 { TRoom ---------------------------------------------------------------------- }
 
-constructor TRoom.Create(const AWorld: T3DWorld; const AOwner: TComponent; const X, Z: Single; const ARotateZ: boolean);
+constructor TRoom.Create(const AOwner: TComponent; const X, Z: Single; const ARotateZ: boolean);
+const
+  AlienRoomChance = 0.5;
+var
+  R: Single;
+begin
+  inherited Create(AOwner);
+  Text := TStringList.Create;
+  R := Random;
+  if R < AlienRoomChance then
+    FOwnership := posAlien else
+    FOwnership := posHuman;
+
+  FRotateZ := ARotateZ;
+  if FRotateZ then
+  begin
+    Rotation := Vector4Single(0, 1, 0, Pi);
+    Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
+  end;
+  Translation := Vector3Single(X, 0, Z);
+end;
+
+procedure TRoom.Instantiate(const AWorld: T3DWorld);
+
+  procedure AddKey(const AWorld: T3DWorld);
+  var
+    Position: TVector3Single;
+    ItemResource: TItemResource;
+  begin
+    if HasKey then
+    begin
+      Position := LocalToOutside(Vector3Single(-0.385276, 0.625180, 10.393058));
+      ItemResource := KeyResource(Key);
+      ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
+    end;
+  end;
 
   procedure ColorizeScene(const Scene: TCastleScene; const Color: TCastleColor; const Intensity: Single);
   begin
@@ -131,20 +174,20 @@ constructor TRoom.Create(const AWorld: T3DWorld; const AOwner: TComponent; const
     finally FreeAndNil(ColorizedNodes) end;
   end;
 
-const
-  AlienRoomChance = 0.5;
+  procedure SetText(const DoorScene: TCastleScene);
+  var
+    TextNode: TTextNode;
+  begin
+    TextNode := DoorScene.RootNode.FindNodeByName(TTextNode, 'DoorText', true) as TTextNode;
+    TextNode.FdString.Items.Assign(Text);
+    TextNode.FdString.Changed;
+  end;
+
 var
   Outside, DoorScene: TCastleScene;
   Door: TDoor;
   R: Single;
 begin
-  inherited Create(AOwner);
-
-  R := Random;
-  if R < AlienRoomChance then
-    FOwnership := posAlien else
-    FOwnership := posHuman;
-
   { TODO: key should be randomized globally. Also check for solvability. }
   R := Random;
   FHasKey := R < 0.5;
@@ -154,14 +197,11 @@ begin
   R := Random;
   FHasRequiredKey := R < 0.5;
   FRequiredKey := TKey(Random(Ord(High(TKey)) + 1));
-
-  FRotateZ := ARotateZ;
-  if ARotateZ then
+  if HasRequiredKey then
   begin
-    Rotation := Vector4Single(0, 1, 0, Pi);
-    Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
+    Text.Insert(0, 'Requires "' + KeyName[RequiredKey] + '" key');
+    Text.Insert(1, 'to open.');
   end;
-  Translation := Vector3Single(X, 0, Z);
 
   { Inside and Outside are splitted, to enable separate ExcludeFromGlobalLights values,
     and to eventually optimize when we show Inside. }
@@ -192,26 +232,20 @@ begin
 
   DoorScene := TCastleScene.Create(Owner);
   Door.Add(DoorScene);
-  DoorScene.Load(ApplicationData('door.x3d'));
+  DoorScene.Load(ApplicationData('door.x3dv'));
   ColorizeScene(DoorScene, PossessedColor[FOwnership], 0.5);
   SetAttributes(DoorScene.Attributes);
+  SetText(DoorScene);
   DoorScene.Spatial := [ssRendering, ssDynamicCollisions];
   DoorScene.ProcessEvents := true;
 
   AddKey(AWorld);
 end;
 
-procedure TRoom.AddKey(const AWorld: T3DWorld);
-var
-  Position: TVector3Single;
-  ItemResource: TItemResource;
+destructor TRoom.Destroy;
 begin
-  if HasKey then
-  begin
-    Position := LocalToOutside(Vector3Single(-0.385276, 0.625180, 10.393058));
-    ItemResource := KeyResource(Key);
-    ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
-  end;
+  FreeAndNil(Text);
+  inherited;
 end;
 
 function TRoom.PlayerInside: boolean;
@@ -238,7 +272,9 @@ begin
   if ColorizedNodes.IndexOf(Node) = -1 then
   begin
     DiffuseColor := (Node as TMaterialNode).FdDiffuseColor;
-    DiffuseColor.Send({LerpRgbInHsv}Lerp(ColorizeIntensity, DiffuseColor.Value, Vector3SingleCut(ColorizeColor)));
+    { do not modify pure black DiffuseColor, as e.g. on door text }
+    if not PerfectlyZeroVector(DiffuseColor.Value) then
+      DiffuseColor.Send({LerpRgbInHsv}Lerp(ColorizeIntensity, DiffuseColor.Value, Vector3SingleCut(ColorizeColor)));
     ColorizedNodes.Add(Node);
   end;
 end;
