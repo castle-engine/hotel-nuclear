@@ -101,7 +101,6 @@ const
 var
   R: TRectangle;
   LineNum, I, X, Y: Integer;
-  S: string;
 begin
   if Player.Dead then
     GLFadeRectangle(ContainerRect, Red, 1.0) else

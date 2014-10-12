@@ -41,22 +41,15 @@ type
 
   TRoom = class(T3DTransform)
   strict private
-    FInside: TCastleScene;
     FOwnership: TPossessed;
-    { Used by ColorizeNode. @groupBegin }
-    ColorizedNodes: TX3DNodeList;
-    ColorizeIntensity: Single;
-    ColorizeColor: TCastleColor;
-    { @groupEnd }
     FHasKey: boolean;
     FKey: TKey;
     FHasRequiredKey: boolean;
     FRequiredKey: TKey;
-    FRotateZ: boolean;
+    FRotateZ, FInsideExists: boolean;
     Text: TStringList;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
-    procedure ColorizeNode(Node: TX3DNode);
   public
     constructor Create(const AOwner: TComponent;
       const X, Z: Single; const ARotateZ: boolean); reintroduce;
@@ -113,6 +106,10 @@ const
     'Yellow'
   );
 
+var
+  { To conserve memory and loading time, we actually have only 2 room inside loaded at a time, indexed by Alien:boolean. }
+  InsideTemplate: array [boolean] of TCastleScene;
+
 implementation
 
 uses SysUtils,
@@ -163,17 +160,6 @@ procedure TRoom.Instantiate(const AWorld: T3DWorld);
     end;
   end;
 
-  procedure ColorizeScene(const Scene: TCastleScene; const Color: TCastleColor; const Intensity: Single);
-  begin
-    ColorizedNodes := TX3DNodeList.Create(false);
-    try
-      ColorizeColor := Color;
-      ColorizeIntensity := Intensity;
-      if Scene.RootNode <> nil then
-        Scene.RootNode.EnumerateNodes(TMaterialNode, @ColorizeNode, false);
-    finally FreeAndNil(ColorizedNodes) end;
-  end;
-
   procedure SetText(const DoorScene: TCastleScene);
   var
     TextNode: TTextNode;
@@ -204,17 +190,8 @@ begin
   end;
 
   { Inside and Outside are splitted, to enable separate ExcludeFromGlobalLights values,
-    and to eventually optimize when we show Inside. }
-
-  FInside := TCastleScene.Create(Owner);
-  Add(FInside);
-  FInside.Load(ApplicationData('room.x3dv'));
-  ColorizeScene(FInside, PossessedColor[FOwnership], 0.5);
-  SetAttributes(FInside.Attributes);
-  FInside.Spatial := [ssRendering, ssDynamicCollisions];
-  FInside.ProcessEvents := true;
-  FInside.ExcludeFromGlobalLights := true;
-  FInside.Exists := PlayerInside;
+    and to allow optimization to only show 1 inside,
+    and to allow actually loading only 1 inside. }
 
   Outside := TCastleScene.Create(Owner);
   Add(Outside);
@@ -255,27 +232,17 @@ end;
 
 function TRoom.GetInsideExists: boolean;
 begin
-  Result := FInside.Exists;
+  Result := FInsideExists;
 end;
 
 procedure TRoom.SetInsideExists(const Value: boolean);
 begin
-  FInside.Exists := Value;
-end;
-
-procedure TRoom.ColorizeNode(Node: TX3DNode);
-var
-  DiffuseColor: TSFColor;
-begin
-  { check ColorizedNodes to avoid processing the same material many times, as it happens that some materials
-    are reUSEd many times on Inside scene. }
-  if ColorizedNodes.IndexOf(Node) = -1 then
+  if FInsideExists <> Value then
   begin
-    DiffuseColor := (Node as TMaterialNode).FdDiffuseColor;
-    { do not modify pure black DiffuseColor, as e.g. on door text }
-    if not PerfectlyZeroVector(DiffuseColor.Value) then
-      DiffuseColor.Send({LerpRgbInHsv}Lerp(ColorizeIntensity, DiffuseColor.Value, Vector3SingleCut(ColorizeColor)));
-    ColorizedNodes.Add(Node);
+    FInsideExists := Value;
+    if FInsideExists then
+      Add(InsideTemplate[FOwnership = posAlien]) else
+      Remove(InsideTemplate[FOwnership = posAlien]);
   end;
 end;
 

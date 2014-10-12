@@ -25,9 +25,10 @@ implementation
 
 uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
   CastleControls, CastlePrecalculatedAnimation, CastleGLImages, CastleConfig,
-  CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils,
+  CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils, CastleScene,
   CastleMaterialProperties, CastleResources, CastleGameNotifications, CastleNotifications,
-  GamePlay, GameSound;
+  CastleSceneCore,
+  GamePlay, GameSound, GameDoorsRooms, GameScene, GamePossessed;
 
 { One-time initialization. }
 procedure ApplicationInitialize;
@@ -62,7 +63,23 @@ begin
 end;
 
 procedure WindowOpen(Container: TUIContainer);
+var
+  Alien: boolean;
 begin
+  for Alien := false to true do
+    if InsideTemplate[Alien] = nil then
+    begin
+      InsideTemplate[Alien] := TCastleScene.Create(Window);
+      InsideTemplate[Alien].Load(ApplicationData('room.x3dv'));
+      SetAttributes(InsideTemplate[Alien].Attributes);
+      InsideTemplate[Alien].Spatial := [ssRendering, ssDynamicCollisions];
+      InsideTemplate[Alien].ProcessEvents := true;
+      InsideTemplate[Alien].ExcludeFromGlobalLights := true;
+      if Alien then
+        ColorizeScene(InsideTemplate[Alien], PossessedColor[posAlien], 0.5) else
+        ColorizeScene(InsideTemplate[Alien], PossessedColor[posHuman], 0.5);
+    end;
+
   GameBegin;
 end;
 

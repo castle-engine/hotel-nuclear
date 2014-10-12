@@ -42,8 +42,8 @@ function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransfor
 
 const
   CorridorSize = 3.0;
-  RoomsX = 5;
-  RoomsZ = 3;
+  RoomsX = 10;
+  RoomsZ = 10;
 var
   X, Z: Integer;
 begin
