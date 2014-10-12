@@ -30,13 +30,24 @@ now:
 * randomize labirythm, to place some keys behind some closed doors
 * place elevator behind closed doors
 * elevator 3d
+* add random hints like :
+
+  This room contains a key.
+  This room does not contain a key.
+  From the two side rooms (to the left and right), exactly one of them contains a key.
+  From the two side rooms (to the left and right), none of them contains a key.
+  From the two side rooms (to the left and right), the left room contains a key only if the right room contains a key.
+  From the two side rooms (to the left and right), the right room contains a key only if the left room contains a key.
 
 * optimize: show only visible room
 * generate whole floor, use borders to delimit
+* nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
+  Rethink headlight look.
 
 graphics:
 * loading_image="ui/loading.png"
 * change my headlight color with my current possesion
+* better anims? at least largely remake existing
 
 g corridor and room:
 * use shadows and shadow maps, easy geom -> make effects!
