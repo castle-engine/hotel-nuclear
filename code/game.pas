@@ -105,8 +105,8 @@ begin
     Window.SaveScreen(FileNameAutoInc(ApplicationName + '_screen_%d.png'));
   if Event.IsKey(K_Escape) then
     Application.Quit;
-  // if Event.IsKey(K_8) then
-  //   NextLevelButton.DoClick;
+  if Event.IsKey(K_8) then
+    NextLevelButton.DoClick;
   GamePress(Event);
 end;
 

@@ -69,6 +69,7 @@ constructor TMap.Create(const Level: Cardinal; const AWorld: T3DWorld; const AOw
 
 const
   CorridorSize = 3.0;
+  ChanceToLie = 0.5;
 var
   X, Z, Division1, Division2, KeysCount, ElevatorX, ElevatorZ, KeyX, KeyZ, I: Integer;
   PosX, MinX, MaxX, MinZ, MaxZ, SpawnX, SpawnZ: Single;
@@ -190,20 +191,37 @@ begin
     end;
   end;
 
-  for I := 1 to Random((RoomsX * RoomsZ) div 2) do
+  for I := 1 to Random(RoomsX * RoomsZ) do
   begin
     X := Random(RoomsX);
     Z := Random(RoomsZ);
-    if Rooms[X, Z].Text.Count <> 0 then Exit; // don't overload text
+    if Rooms[X, Z].Text.Count <> 0 then Continue; // don't overload text
 
-    if not Rooms[X, Z].HasKey then
+    if (Random < ChanceToLie) and (X > 0) and (Rooms[X -1, Z].Text.Count = 0) and Odd(Z) then
     begin
-      Rooms[X, Z].Text.Append('This room does not');
-      Rooms[X, Z].Text.Append('contain a key.');
+      if Rooms[X - 1, Z].HasKey then
+      begin
+        Rooms[X - 1, Z].Text.Append('Hint: This room does not');
+        Rooms[X - 1, Z].Text.Append('contain a key.');
+      end else
+      begin
+        Rooms[X - 1, Z].Text.Append('Hint: This room does');
+        Rooms[X - 1, Z].Text.Append('contain a key.');
+      end;
+
+      Rooms[X, Z].Text.Append('Hint: The hint on a room');
+      Rooms[X, Z].Text.Append('to the left IS A LIE.');
     end else
     begin
-      Rooms[X, Z].Text.Append('This room does');
-      Rooms[X, Z].Text.Append('contain a key.');
+      if not Rooms[X, Z].HasKey then
+      begin
+        Rooms[X, Z].Text.Append('Hint: This room does not');
+        Rooms[X, Z].Text.Append('contain a key.');
+      end else
+      begin
+        Rooms[X, Z].Text.Append('Hint: This room does');
+        Rooms[X, Z].Text.Append('contain a key.');
+      end;
     end;
   end;
 
