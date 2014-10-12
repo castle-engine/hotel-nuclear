@@ -63,7 +63,7 @@ end;
 
 procedure WindowUpdate(Container: TUIContainer);
 begin
-  GameUpdate;
+  GameUpdate(Container.Fps.UpdateSecondsPassed);
 end;
 
 procedure WindowPress(Container: TUIContainer; const Event: TInputPressRelease);

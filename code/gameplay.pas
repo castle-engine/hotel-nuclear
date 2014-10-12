@@ -32,7 +32,7 @@ var
                      true {$endif} {$endif};
 
 procedure GameBegin;
-procedure GameUpdate;
+procedure GameUpdate(const SecondsPassed: Single);
 
 function GetPossessed: TPossessed;
 procedure SetPossessed(const Value: TPossessed);
@@ -55,18 +55,20 @@ begin
 end;
 
 procedure SetPossessed(const Value: TPossessed);
-var
+{var
   NavInfo: TKambiNavigationInfoNode;
-  HeadlightNode: TPointLightNode;
+  HeadlightNode: TPointLightNode;}
 begin
   if FPossessed <> Value then
   begin
     FPossessed := Value;
     if SceneManager <> nil then
     begin
+      { Better not, confuses color of doors:
       NavInfo := SceneManager.MainScene.NavigationInfoStack.Top as TKambiNavigationInfoNode;
       HeadlightNode :=  NavInfo.FdHeadLightNode.Value as TPointLightNode;
       HeadlightNode.FdColor.Send(Vector3SingleCut(PossessedColor[Value]));
+      }
       Notifications.Color := PossessedColor[Value];
       SoundEngine.Sound(stSquish);
     end;
@@ -90,29 +92,53 @@ const
   ( 'immaterial ghost (not possessing anyone now)',
     'martian',
     'earthling' );
+  PossessedNameShort: array [TPossessed] of string =
+  ( 'ghost',
+    'martian',
+    'earthling' );
 var
   R: TRectangle;
+  LineNum: Integer;
+  Color: TCastleColor;
 begin
   if Player.Dead then
     GLFadeRectangle(ContainerRect, Red, 1.0) else
     GLFadeRectangle(ContainerRect, Player.FadeOutColor, Player.FadeOutIntensity);
 
+  Color := PossessedColor[Possessed];
+  Color[3] := 0.9;
   R := Rectangle(UIMargin, ContainerHeight - UIMargin - 100, 40, 100);
   DrawRectangle(R.Grow(2), Vector4Single(1.0, 0.5, 0.5, 0.2));
   if not Player.Dead then
   begin
     R.Height := Clamped(Round(
       MapRange(Player.Life, 0, Player.MaxLife, 0, R.Height)), 0, R.Height);
-    DrawRectangle(R, Vector4Single(1, 0, 0, 0.9));
+    DrawRectangle(R, Color);
   end;
 
-  UIFont.Print(R.Right + UIMargin, ContainerHeight - UIMargin - UIFont.RowHeight, Gray,
+  LineNum := 1;
+
+  UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight), Gray,
     Format('FPS: %f (real : %f)', [Window.Fps.FrameTime, Window.Fps.RealTime]));
-  UIFont.Print(R.Right + UIMargin, ContainerHeight - 2 * (UIMargin + UIFont.RowHeight),
+  Inc(LineNum);
+
+  UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
     PossessedColor[Possessed], PossessedName[Possessed]);
+  Inc(LineNum);
+
+  { note: show this even when Player.Dead, since that's where you usually have time to read this... }
+  if (CurrentRoom <> nil) and
+     (CurrentRoom.Ownership <> Possessed) then
+  begin
+    UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
+      PossessedColor[Possessed], Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
+      [PossessedNameShort[CurrentRoom.Ownership], PossessedNameShort[Possessed] ]));
+    Inc(LineNum);
+  end;
 
   Notifications.PositionX := R.Right + UIMargin;
-  Notifications.PositionY := - 2 * (UIMargin + UIFont.RowHeight) - UIMargin;
+  Notifications.PositionY := - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - UIMargin;
+  Inc(LineNum);
 end;
 
 var
@@ -174,7 +200,8 @@ begin
   ResourceAlien := Resources.FindName('Alien') as TWalkAttackCreatureResource;
   ResourceHuman := Resources.FindName('Human') as TWalkAttackCreatureResource;
 
-  CurrentlyOpenDoor := nil;
+  CurrentOpenDoor := nil;
+  CurrentRoom := nil;
   Possessed := posGhost;
 
   Notifications.Color := PossessedColor[Possessed];
@@ -183,7 +210,10 @@ begin
   Notifications.Exists := true;
 end;
 
-procedure GameUpdate;
+procedure GameUpdate(const SecondsPassed: Single);
+const
+  LifeLossSpeed = 50.0; // very fast, since player should not be here
+  LifeRegenerateSpeed = 10.0;
 var
   Creature: TCreature;
   ClosestCreature: TCreature;
@@ -191,30 +221,39 @@ var
 const
   DistanceToPossess = 3;
 begin
-  ClosestCreature := nil;
-  for I := 0 to SceneManager.Items.Count - 1 do
-    if SceneManager.Items[I] is TCreature then
-    begin
-      Creature := SceneManager.Items[I] as TCreature;
-      if (ClosestCreature = nil) or
-         (PointsDistanceSqr(Creature.Position, Player.Position) <
-          PointsDistanceSqr(ClosestCreature.Position, Player.Position)) then
-        ClosestCreature := Creature;
-   end;
-
-  if (ClosestCreature <> nil) and
-     (PointsDistanceSqr(ClosestCreature.Position, Player.Position) < Sqr(DistanceToPossess)) then
+  if not Player.Dead then
   begin
-    if (ClosestCreature.Resource = ResourceAlien) and (Possessed <> posAlien) then
+    ClosestCreature := nil;
+    for I := 0 to SceneManager.Items.Count - 1 do
+      if SceneManager.Items[I] is TCreature then
+      begin
+        Creature := SceneManager.Items[I] as TCreature;
+        if (not Creature.Dead) and (
+             (ClosestCreature = nil) or
+             (PointsDistanceSqr(Creature.Position, Player.Position) <
+              PointsDistanceSqr(ClosestCreature.Position, Player.Position)) ) then
+          ClosestCreature := Creature;
+     end;
+
+    if (ClosestCreature <> nil) and
+       (PointsDistanceSqr(ClosestCreature.Position, Player.Position) < Sqr(DistanceToPossess)) then
     begin
-      ClosestCreature.Exists := false;
-      Possessed := posAlien;
-    end else
-    if (ClosestCreature.Resource = ResourceHuman) and (Possessed <> posHuman) then
-    begin
-      ClosestCreature.Exists := false;
-      Possessed := posHuman;
+      if (ClosestCreature.Resource = ResourceAlien) and (Possessed <> posAlien) then
+      begin
+        ClosestCreature.Life := 0;
+        Possessed := posAlien;
+      end else
+      if (ClosestCreature.Resource = ResourceHuman) and (Possessed <> posHuman) then
+      begin
+        ClosestCreature.Life := 0;
+        Possessed := posHuman;
+      end;
     end;
+
+    if (CurrentRoom <> nil) and
+       (CurrentRoom.Ownership <> Possessed) then
+      Player.Life := Player.Life - SecondsPassed * LifeLossSpeed else
+      Player.Life := Min(Player.MaxLife, Player.Life + SecondsPassed * LifeRegenerateSpeed);
   end;
 end;
 

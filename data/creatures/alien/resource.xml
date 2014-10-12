@@ -9,6 +9,7 @@
   middle_height="0.8"
   preferred_distance="1000.0"
   receive_shadow_volumes="False"
+  remove_dead="True"
 >
   <model>
     <idle   url="idle.kanim"   />

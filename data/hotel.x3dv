@@ -6,9 +6,9 @@ KambiNavigationInfo {
   speed 10
   headlight TRUE
   headlightNode PointLight {
-    color 0.5 0.5 1
+#    color 0.5 0.5 1 # do not confuse colors with this
     attenuation 1 0 0.2
-    radius 1
+    radius 3
   }
 }
 

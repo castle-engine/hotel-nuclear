@@ -19,8 +19,9 @@ unit GameDoorsRooms;
 interface
 
 uses Classes,
-  Castle3D, CastleScene,
-  CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes;
+  Castle3D, CastleScene, X3DNodes, CastleColors,
+  CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
+  GamePossessed;
 
 const
   RoomSizeX = 7.0;
@@ -30,12 +31,20 @@ type
   TRoom = class(T3DTransform)
   strict private
     FInside: TCastleScene;
+    FOwnership: TPossessed;
+    { Used by ColorizeNode. @groupBegin }
+    ColorizedNodes: TX3DNodeList;
+    ColorizeIntensity: Single;
+    ColorizeColor: TCastleColor;
+    { @groupEnd }
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
+    procedure ColorizeNode(Node: TX3DNode);
   public
     constructor Create(const AOwner: TComponent; const X, Z: Single; const RotateZ: boolean); reintroduce;
     property InsideExists: boolean read GetInsideExists write SetInsideExists;
     function PlayerInside: boolean;
+    property Ownership: TPossessed read FOwnership;
   end;
 
   TDoor = class(T3DLinearMoving)
@@ -57,21 +66,45 @@ type
 
 var
   { Only 1 door can be open at a time. Use this global variable to track it. }
-  CurrentlyOpenDoor: TDoor = nil;
+  CurrentOpenDoor: TDoor = nil;
+
+  { Room where player currently is. }
+  CurrentRoom: TRoom;
 
 implementation
 
-uses CastleGameNotifications, CastleSoundEngine,
-  GameScene, GameSound, GamePossessed, GamePlay;
+uses SysUtils,
+  CastleGameNotifications, CastleSoundEngine, X3DFields,
+  GameScene, GameSound, GamePlay;
 
 { TRoom ---------------------------------------------------------------------- }
 
 constructor TRoom.Create(const AOwner: TComponent; const X, Z: Single; const RotateZ: boolean);
+
+  procedure ColorizeScene(const Scene: TCastleScene; const Color: TCastleColor; const Intensity: Single);
+  begin
+    ColorizedNodes := TX3DNodeList.Create(false);
+    try
+      ColorizeColor := Color;
+      ColorizeIntensity := Intensity;
+      if Scene.RootNode <> nil then
+        Scene.RootNode.EnumerateNodes(TMaterialNode, @ColorizeNode, false);
+    finally FreeAndNil(ColorizedNodes) end;
+  end;
+
+const
+  AlienRoomChance = 0.5;
 var
   Outside, DoorScene: TCastleScene;
   Door: TDoor;
+  R: Single;
 begin
   inherited Create(AOwner);
+
+  R := Random;
+  if R < AlienRoomChance then
+    FOwnership := posAlien else
+    FOwnership := posHuman;
 
   if RotateZ then
   begin
@@ -86,6 +119,7 @@ begin
   FInside := TCastleScene.Create(Owner);
   Add(FInside);
   FInside.Load(ApplicationData('room.x3dv'));
+  ColorizeScene(FInside, PossessedColor[FOwnership], 0.5);
   SetAttributes(FInside.Attributes);
   FInside.Spatial := [ssRendering, ssDynamicCollisions];
   FInside.ProcessEvents := true;
@@ -103,12 +137,13 @@ begin
   Add(Door);
   Door.MoveTime := 1.0;
   Door.TranslationEnd := Vector3Single(0, 2.92, 0);
-  Door.StayOpenTime := 4.0;
+  Door.StayOpenTime := 2.0;
   Door.Room := Self;
 
   DoorScene := TCastleScene.Create(Owner);
   Door.Add(DoorScene);
   DoorScene.Load(ApplicationData('door.x3d'));
+  ColorizeScene(DoorScene, PossessedColor[FOwnership], 0.5);
   SetAttributes(DoorScene.Attributes);
   DoorScene.Spatial := [ssRendering, ssDynamicCollisions];
   DoorScene.ProcessEvents := true;
@@ -127,6 +162,20 @@ end;
 procedure TRoom.SetInsideExists(const Value: boolean);
 begin
   FInside.Exists := Value;
+end;
+
+procedure TRoom.ColorizeNode(Node: TX3DNode);
+var
+  DiffuseColor: TSFColor;
+begin
+  { check ColorizedNodes to avoid processing the same material many times, as it happens that some materials
+    are reUSEd many times on Inside scene. }
+  if ColorizedNodes.IndexOf(Node) = -1 then
+  begin
+    DiffuseColor := (Node as TMaterialNode).FdDiffuseColor;
+    DiffuseColor.Send({LerpRgbInHsv}Lerp(ColorizeIntensity, DiffuseColor.Value, Vector3SingleCut(ColorizeColor)));
+    ColorizedNodes.Add(Node);
+  end;
 end;
 
 { TDoor ---------------------------------------------------------------------- }
@@ -173,6 +222,8 @@ begin
 end;
 
 procedure TDoor.Update(const SecondsPassed: Single; var RemoveMe: TRemoveType);
+var
+  InRoom: boolean;
 begin
   inherited;
 
@@ -181,12 +232,23 @@ begin
       MoveTime + StayOpenTime) then
     GoBeginPosition;
 
-  { clear CurrentlyOpenDoor when we'll close }
-  if (CurrentlyOpenDoor = Self) and CompletelyBeginPosition then
+  { clear CurrentOpenDoor when we'll close }
+  if (CurrentOpenDoor = Self) and CompletelyBeginPosition then
   begin
-    CurrentlyOpenDoor := nil;
-    Room.InsideExists := Room.PlayerInside;
+    CurrentOpenDoor := nil;
+    InRoom := Room.PlayerInside;
+    Room.InsideExists := InRoom;
+    { update CurrentRoom once, depending on room player is inside }
+    if InRoom then
+      CurrentRoom := Room else
+      CurrentRoom := nil;
   end;
+
+  { while the door remains open, constantly recheck whether player is in given room }
+  if not CompletelyBeginPosition then
+    if Room.PlayerInside then
+      CurrentRoom := Room else
+      CurrentRoom := nil;
 end;
 
 function TDoor.PointingDeviceActivate(const Active: boolean;
@@ -204,7 +266,7 @@ begin
      { Only if all doors are open now, allow opening.
        This allows to optimize room display, as only 1 room can
        be visible at a time. }
-     (CurrentlyOpenDoor = nil) then
+     (CurrentOpenDoor = nil) then
   begin
     if Possessed = posGhost then
     begin
@@ -213,7 +275,7 @@ begin
     end else
     begin
       GoEndPosition;
-      CurrentlyOpenDoor := Self;
+      CurrentOpenDoor := Self;
       Room.InsideExists := true;
     end;
     Result := true;
