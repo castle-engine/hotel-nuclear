@@ -70,7 +70,7 @@ constructor TMap.Create(const Level: Cardinal; const AWorld: T3DWorld; const AOw
 const
   CorridorSize = 3.0;
 var
-  X, Z, Division1, Division2, KeysCount: Integer;
+  X, Z, Division1, Division2, KeysCount, ElevatorX, ElevatorZ, KeyX, KeyZ, I: Integer;
   PosX, MinX, MaxX, MinZ, MaxZ, SpawnX, SpawnZ: Single;
 begin
   inherited Create(AOwner);
@@ -162,6 +162,33 @@ begin
   { now shift them, because they start from RotateZ }
   MinX -= RoomSizeX;
   MaxX -= RoomSizeX;
+
+  ElevatorX := Random(RoomsX);
+  ElevatorZ := Random(RoomsZ);
+  Rooms[ElevatorX, ElevatorZ].RoomType := rtElevator;
+  if KeysCount > 1 then
+  begin
+    Rooms[ElevatorX, ElevatorZ].HasRequiredKey := true;
+    Rooms[ElevatorX, ElevatorZ].RequiredKey := Low(TKey);
+
+    for I := 1 to KeysCount - 1 do
+    begin
+      repeat
+        KeyX := Random(RoomsX);
+        KeyZ := Random(RoomsZ);
+      until
+        (Rooms[KeyX, KeyZ].RoomType <> rtElevator) and
+        (not Rooms[KeyX, KeyZ].HasKey) and
+        (not Rooms[KeyX, KeyZ].HasRequiredKey);
+      Rooms[KeyX, KeyZ].HasKey := true;
+      Rooms[KeyX, KeyZ].Key := TKey(I - 1);
+      if I < KeysCount - 1 then
+      begin
+        Rooms[KeyX, KeyZ].HasRequiredKey := true;
+        Rooms[KeyX, KeyZ].RequiredKey := TKey(I);
+      end;
+    end;
+  end;
 
   for X := 0 to RoomsX - 1 do
     for Z := 0 to RoomsZ - 1 do

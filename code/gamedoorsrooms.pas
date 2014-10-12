@@ -28,15 +28,16 @@ const
   RoomSizeZ = 12.0;
 
 type
+  { Key colors. The lower colors are used more often, so place more contrasting and happy colors there :) }
   TKey = (
+    keyYellow,
+    keyWhite,
     keyAqua,
+    keyRed,
     keyBlack,
     keyBlue,
     keyGray,
-    keyGreen,
-    keyRed,
-    keyWhite,
-    keyYellow
+    keyGreen
   );
 
   TRoomType = (rtAlien, rtHuman, rtElevator);
@@ -101,14 +102,14 @@ var
 
 const
   KeyName: array [TKey] of string = (
+    'Yellow',
+    'White',
     'Aqua',
+    'Red',
     'Black',
     'Blue',
     'Gray',
-    'Green',
-    'Red',
-    'White',
-    'Yellow'
+    'Green'
   );
 
 var
@@ -140,8 +141,6 @@ begin
   if R < AlienRoomChance then
     FRoomType := rtAlien else
     FRoomType := rtHuman;
-  if Random < 0.5 then
-    FRoomType := rtElevator;
 
   FRotateZ := ARotateZ;
   if FRotateZ then
@@ -179,17 +178,7 @@ procedure TRoom.Instantiate(const AWorld: T3DWorld);
 var
   Outside, DoorScene: TCastleScene;
   Door: TDoor;
-  R: Single;
 begin
-  { TODO: key should be randomized globally. Also check for solvability. }
-  R := Random;
-  FHasKey := R < 0.5;
-  FKey := TKey(Random(Ord(High(TKey)) + 1));
-
-  { TODO: required key should be randomized globally. Also check for solvability. }
-  R := Random;
-  FHasRequiredKey := R < 0.5;
-  FRequiredKey := TKey(Random(Ord(High(TKey)) + 1));
   if HasRequiredKey then
   begin
     Text.Insert(0, 'Requires "' + KeyName[RequiredKey] + '" key');
