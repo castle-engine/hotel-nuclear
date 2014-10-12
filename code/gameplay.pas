@@ -18,7 +18,9 @@ unit GamePlay;
 
 interface
 
-uses CastleSceneManager, CastlePlayer, CastleLevels;
+uses CastleVectors, CastleSceneManager, CastlePlayer, CastleLevels, CastleColors,
+  CastleKeysMouse,
+  GamePossessed;
 
 var
   SceneManager: TGameSceneManager;
@@ -30,13 +32,46 @@ var
                      true {$endif} {$endif};
 
 procedure GameBegin;
+procedure GameUpdate;
+
+function GetPossessed: TPossessed;
+procedure SetPossessed(const Value: TPossessed);
+property Possessed: TPossessed read GetPossessed write SetPossessed;
 
 implementation
 
 uses SysUtils,
-  CastleUIControls, CastleRectangles, CastleGLUtils, CastleColors,
-  CastleVectors, CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
-  GameWindow, GameScene, GameMap, GameDoors;
+  CastleUIControls, CastleRectangles, CastleGLUtils, X3DNodes, CastleLog,
+  CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
+  CastleSoundEngine, CastleCreatures, CastleResources, CastleGameNotifications,
+  GameWindow, GameScene, GameMap, GameDoorsRooms, GameSound;
+
+var
+  FPossessed: TPossessed;
+
+function GetPossessed: TPossessed;
+begin
+  Result := FPossessed;
+end;
+
+procedure SetPossessed(const Value: TPossessed);
+var
+  NavInfo: TKambiNavigationInfoNode;
+  HeadlightNode: TPointLightNode;
+begin
+  if FPossessed <> Value then
+  begin
+    FPossessed := Value;
+    if SceneManager <> nil then
+    begin
+      NavInfo := SceneManager.MainScene.NavigationInfoStack.Top as TKambiNavigationInfoNode;
+      HeadlightNode :=  NavInfo.FdHeadLightNode.Value as TPointLightNode;
+      HeadlightNode.FdColor.Send(Vector3SingleCut(PossessedColor[Value]));
+      Notifications.Color := PossessedColor[Value];
+      SoundEngine.Sound(stSquish);
+    end;
+  end;
+end;
 
 { TGame2DControls ------------------------------------------------------------ }
 
@@ -50,6 +85,11 @@ type
   end;
 
 procedure TGame2DControls.Render;
+const
+  PossessedName: array [TPossessed] of string =
+  ( 'immaterial ghost (not possessing anyone now)',
+    'martian',
+    'earthling' );
 var
   R: TRectangle;
 begin
@@ -68,12 +108,20 @@ begin
 
   UIFont.Print(R.Right + UIMargin, ContainerHeight - UIMargin - UIFont.RowHeight, Gray,
     Format('FPS: %f (real : %f)', [Window.Fps.FrameTime, Window.Fps.RealTime]));
+  UIFont.Print(R.Right + UIMargin, ContainerHeight - 2 * (UIMargin + UIFont.RowHeight),
+    PossessedColor[Possessed], PossessedName[Possessed]);
+
+  Notifications.PositionX := R.Right + UIMargin;
+  Notifications.PositionY := - 2 * (UIMargin + UIFont.RowHeight) - UIMargin;
 end;
 
 var
   Game2DControls: TGame2DControls;
 
 { routines ------------------------------------------------------------------- }
+
+var
+  ResourceAlien, ResourceHuman: TWalkAttackCreatureResource;
 
 procedure GameBegin;
 
@@ -85,6 +133,8 @@ procedure GameBegin;
 
     { free 2D stuff (including SceneManager and viewports) }
     FreeAndNil(SceneManager);
+
+    Notifications.Exists := false;
   end;
 
 begin
@@ -121,7 +171,51 @@ begin
     Window.AutomaticTouchInterface := true;
   end;
 
+  ResourceAlien := Resources.FindName('Alien') as TWalkAttackCreatureResource;
+  ResourceHuman := Resources.FindName('Human') as TWalkAttackCreatureResource;
+
   CurrentlyOpenDoor := nil;
+  Possessed := posGhost;
+
+  Notifications.Color := PossessedColor[Possessed];
+  Notifications.Clear;
+  Notifications.CollectHistory := true;
+  Notifications.Exists := true;
+end;
+
+procedure GameUpdate;
+var
+  Creature: TCreature;
+  ClosestCreature: TCreature;
+  I: Integer;
+const
+  DistanceToPossess = 3;
+begin
+  ClosestCreature := nil;
+  for I := 0 to SceneManager.Items.Count - 1 do
+    if SceneManager.Items[I] is TCreature then
+    begin
+      Creature := SceneManager.Items[I] as TCreature;
+      if (ClosestCreature = nil) or
+         (PointsDistanceSqr(Creature.Position, Player.Position) <
+          PointsDistanceSqr(ClosestCreature.Position, Player.Position)) then
+        ClosestCreature := Creature;
+   end;
+
+  if (ClosestCreature <> nil) and
+     (PointsDistanceSqr(ClosestCreature.Position, Player.Position) < Sqr(DistanceToPossess)) then
+  begin
+    if (ClosestCreature.Resource = ResourceAlien) and (Possessed <> posAlien) then
+    begin
+      ClosestCreature.Exists := false;
+      Possessed := posAlien;
+    end else
+    if (ClosestCreature.Resource = ResourceHuman) and (Possessed <> posHuman) then
+    begin
+      ClosestCreature.Exists := false;
+      Possessed := posHuman;
+    end;
+  end;
 end;
 
 end.

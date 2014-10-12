@@ -26,7 +26,7 @@ implementation
 uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
   CastleControls, CastlePrecalculatedAnimation, CastleGLImages, CastleConfig,
   CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils,
-  CastleMaterialProperties, CastleResources,
+  CastleMaterialProperties, CastleResources, CastleGameNotifications, CastleNotifications,
   GamePlay, GameSound;
 
 { One-time initialization. }
@@ -43,6 +43,13 @@ begin
 
   //Levels.LoadFromFiles; // cannot search recursively in Android assets
   Levels.AddFromFile(ApplicationData('level.xml'));
+
+  Window.Controls.InsertFront(Notifications);
+  Notifications.HorizontalPosition := hpLeft;
+  Notifications.VerticalPosition := vpUp;
+  Notifications.MaxMessages := 1; // otherwise Notifications.PositionX, PositionY would not work perfectly
+  Notifications.HorizontalMargin := 0;
+  Notifications.VerticalMargin := 0;
 end;
 
 procedure WindowOpen(Container: TUIContainer);
@@ -56,6 +63,7 @@ end;
 
 procedure WindowUpdate(Container: TUIContainer);
 begin
+  GameUpdate;
 end;
 
 procedure WindowPress(Container: TUIContainer; const Event: TInputPressRelease);

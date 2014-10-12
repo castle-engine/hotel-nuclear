@@ -13,28 +13,23 @@
   ----------------------------------------------------------------------------
 }
 
-{ Sounds in "Hotel Nuclear". }
-unit GameSound;
+{ Possessed type and basic info. Used throughout the game, as it's one of the basic
+  gameplay ideas. }
+unit GamePossessed;
 
 interface
 
-uses Classes, SysUtils, CastleSoundEngine;
+uses CastleColors;
 
-var
-  stDoorOpen, stDoorClose, stSquish: TSoundType;
-
-procedure InitializeSound;
+type
+  TPossessed = (posGhost, posAlien, posHuman);
+const
+  PossessedColor: array [TPossessed] of TCastleColor =
+  ( (0.5, 1, 0.5, 1),
+    (1, 0.2, 0.2, 1),
+    (0.5, 0.5, 1, 1)
+  );
 
 implementation
-
-uses CastleFilesUtils;
-
-procedure InitializeSound;
-begin
-  SoundEngine.RepositoryURL := ApplicationData('sounds/index.xml');
-  stDoorOpen  := SoundEngine.SoundFromName('door_open');
-  stDoorClose := SoundEngine.SoundFromName('door_close');
-  stSquish    := SoundEngine.SoundFromName('squish');
-end;
 
 end.

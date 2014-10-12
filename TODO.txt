@@ -22,7 +22,6 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* ai of hunting, possessing
 * enter a room: colorize room, for alien or earth.
 * pickup keys, show picked up
 * doors opening, visualize which key to which
@@ -40,13 +39,13 @@ now:
   The hint on the room to the left is a lie!
   The hint on the room to the right is a lie!
 
+* control to leave possession to ghost
 * generate whole floor, use borders to delimit
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.
-* doors opening only as a non-ghost
 
 graphics:
-* loading_image="ui/loading.png"
+* loading_image="ui/loading.png", put there keys from README too
 * change my headlight color with my current possesion
 * better anims? at least largely remake existing
 
