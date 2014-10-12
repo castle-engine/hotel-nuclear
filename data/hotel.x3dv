@@ -7,8 +7,8 @@ KambiNavigationInfo {
   headlight TRUE
   headlightNode PointLight {
     color 1 1 0
-    attenuation 1 0 0.1
-    radius 3
+    attenuation 1 0 0.2
+    radius 1
   }
 }
 

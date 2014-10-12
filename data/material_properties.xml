@@ -7,5 +7,7 @@
   <property texture_base_name="Good Textures_005337"              normal_map="textures/normal_maps/Good Textures_005337.png"         />
   <property texture_base_name="paperTextureNo4401_1600x1200"      normal_map="textures/normal_maps/paperTextureNo4401_1600x1200.png" />
   <property texture_base_name="sf_dustywall02"                    normal_map="textures/normal_maps/sf_dustywall02.png"               />
-  <property texture_base_name="floor texture_0"                   normal_map="textures/normal_maps/floor texture_0.png"                       />
+  <property texture_base_name="floor texture_0"                   normal_map="textures/normal_maps/floor texture_0.png"              />
+  <property texture_base_name="Sandstone-Ornament-qubodup-PaataVardanashvili-CCBY3" normal_map="textures/normal_maps/Sandstone-Ornament-qubodup-PaataVardanashvili-CCBY3.png" />
+  <property texture_base_name="door_tile_empty"                                     normal_map="textures/normal_maps/door_tile_empty.png" />
 </properties>

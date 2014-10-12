@@ -38,6 +38,8 @@ now:
   From the two side rooms (to the left and right), none of them contains a key.
   From the two side rooms (to the left and right), the left room contains a key only if the right room contains a key.
   From the two side rooms (to the left and right), the right room contains a key only if the left room contains a key.
+  The hint on the room to the left is a lie!
+  The hint on the room to the right is a lie!
 
 * optimize: show only visible room
 * generate whole floor, use borders to delimit
