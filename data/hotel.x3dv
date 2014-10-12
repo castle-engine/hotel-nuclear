@@ -4,7 +4,12 @@ PROFILE Interchange
 KambiNavigationInfo {
   type [ "WALK", "ANY" ]
   speed 10
-  headlight FALSE
+  headlight TRUE
+  headlightNode PointLight {
+    color 1 1 0
+    attenuation 1 0 0.1
+    radius 3
+  }
 }
 
 # Camera settings "encoded" in the VRML/X3D declaration below :

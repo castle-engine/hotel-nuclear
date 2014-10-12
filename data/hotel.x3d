@@ -18,13 +18,13 @@
 		<Transform DEF="Sun_001_TRANSFORM"
 		           translation="45.185127 18.051641 -43.451118"
 		           scale="1.000000 1.000000 1.000000"
-		           rotation="-0.832123 0.544977 0.102821 2.006969"
+		           rotation="0.144037 0.866357 -0.478204 2.540483"
 		           >
 			<DirectionalLight DEF="LA_Sun_001"
 			                  ambientIntensity="0.0000"
 			                  color="1.0000 1.0000 1.0000"
-			                  intensity="1.0000"
-			                  direction="-0.0000 0.0000 -1.0000"
+			                  intensity="0.5714"
+			                  direction="-0.0000 -0.0000 -1.0000"
 			                  global="TRUE"
 			                  />
 		</Transform>
@@ -36,7 +36,7 @@
 			<DirectionalLight DEF="LA_Sun"
 			                  ambientIntensity="0.0000"
 			                  color="1.0000 1.0000 1.0000"
-			                  intensity="1.0000"
+			                  intensity="0.5714"
 			                  direction="-0.0000 0.0000 -1.0000"
 			                  global="TRUE"
 			                  />
@@ -54,8 +54,8 @@
 				<Group DEF="group_ME_Cube">
 					<Shape>
 						<Appearance>
-							<ImageTexture DEF="IM_Good_Textures_001978-2_png"
-							              url='"textures/Good Textures_001978-2.png" "Good Textures_001978-2.png" "/home/michalis/sources/castle-engine/trunk/hotel_nuclear/data/textures/Good Textures_001978-2.png"'
+							<ImageTexture DEF="IM_Good_Textures_005309_png"
+							              url='"textures/Good Textures_005309.png" "Good Textures_005309.png"'
 							              />
 							<Material DEF="MA_mat_floor"
 							          diffuseColor="0.383 0.383 0.383"
@@ -67,13 +67,28 @@
 							          />
 						</Appearance>
 						<IndexedFaceSet solid="true"
-						                texCoordIndex="0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 "
-						                coordIndex="0 3 2 1 -1 0 1 5 4 -1 1 2 6 5 -1 2 3 7 6 -1 3 0 4 7 -1 "
+						                texCoordIndex="0 1 2 3 -1 "
+						                coordIndex="4 5 6 7 -1 "
 						                >
 							<Coordinate DEF="coords_ME_Cube"
 							            point="36.852070 36.852070 -1.000000 36.852070 -36.852066 -1.000000 -36.852074 -36.852066 -1.000000 -36.852058 36.852085 -1.000000 36.852085 36.852055 3.000000 36.852051 -36.852093 3.000000 -36.852085 -36.852058 3.000000 -36.852066 36.852070 3.000000 "
 							            />
-							<TextureCoordinate point="0.5000 0.5000 -9.5000 0.5000 -9.5000 -6.7754 0.5000 -6.7754 0.5000 0.5000 -9.5000 0.5000 -9.5000 1.9551 0.5000 1.9551 0.5000 0.5000 -9.5000 0.5000 -9.5000 1.9551 0.5000 1.9551 0.5000 0.5000 10.5000 0.5000 10.5000 1.9551 0.5000 1.9551 -9.5000 -0.9551 0.5000 -0.9551 0.5000 0.5000 -9.5000 0.5000 " />
+							<TextureCoordinate point="0.8565 0.9260 0.8565 -35.9260 -29.9805 -35.9260 -29.9805 0.9260 " />
+						</IndexedFaceSet>
+					</Shape>
+					<Shape>
+						<Appearance>
+							<ImageTexture DEF="IM_floor_texture_0_jpg"
+							              url='"textures/floor texture_0.jpg" "floor texture_0.jpg"'
+							              />
+							<Material USE="MA_mat_floor" />
+						</Appearance>
+						<IndexedFaceSet solid="true"
+						                texCoordIndex="0 1 2 3 -1 "
+						                coordIndex="0 3 2 1 -1 "
+						                >
+							<Coordinate USE="coords_ME_Cube" />
+							<TextureCoordinate point="0.8565 0.9260 -29.9805 0.9260 -29.9805 -35.9260 0.8565 -35.9260 " />
 						</IndexedFaceSet>
 					</Shape>
 				</Group>

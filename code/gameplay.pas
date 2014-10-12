@@ -91,7 +91,6 @@ begin
   GameEnd;
 
   SceneManager := Window.SceneManager;
-  SceneManager.UseGlobalLights := false;
 
   Player := TPlayer.Create(SceneManager);
   SceneManager.Items.Add(Player);

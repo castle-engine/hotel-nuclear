@@ -34,16 +34,9 @@ const
   RoomSizeZ = 12.0;
   CorridorSize = 3.0;
 
-  function CreateRoom: TCastleScene;
-  begin
-    Result := TCastleScene.Create(Owner);
-    Result.Load(ApplicationData('room.x3dv'));
-    SetAttributes(Result.Attributes);
-    Result.Spatial := [ssRendering, ssDynamicCollisions];
-    Result.ProcessEvents := true;
-  end;
-
   function CreateRoom(const X, Z: Single; const RotateZ: boolean): T3DTransform;
+  var
+    Inside, Outside: TCastleScene;
   begin
     Result := T3DTransform.Create(Owner);
     if RotateZ then
@@ -52,7 +45,24 @@ const
       Result.Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
     end;
     Result.Translation := Vector3Single(X, 0, Z);
-    Result.Add(CreateRoom());
+
+    { Inside and Outside are splitted, to enable separate ExcludeFromGlobalLights values,
+      and to eventually optimize when we show Inside. }
+
+    Inside := TCastleScene.Create(Owner);
+    Result.Add(Inside);
+    Inside.Load(ApplicationData('room.x3dv'));
+    SetAttributes(Inside.Attributes);
+    Inside.Spatial := [ssRendering, ssDynamicCollisions];
+    Inside.ProcessEvents := true;
+    Inside.ExcludeFromGlobalLights := true;
+
+    Outside := TCastleScene.Create(Owner);
+    Result.Add(Outside);
+    Outside.Load(ApplicationData('room_outside.x3dv'));
+    SetAttributes(Outside.Attributes);
+    Outside.Spatial := [ssRendering, ssDynamicCollisions];
+    Outside.ProcessEvents := true;
   end;
 
 begin

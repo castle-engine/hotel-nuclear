@@ -25,12 +25,16 @@ now:
 * alien, human, animal - with anims!
 * gen, room is 7x12
 
+* change my headlight color with my current possesion
+
 graphics:
 * loading_image="ui/loading.png"
 
 g corridor and room:
 * use shadows and shadow maps, easy geom -> make effects!
 * slight animation of light color and position
+* tex room_outside suggests exterior, not interior.
+* doors rectangular?
 
 g room:
 * adjust lights using view3dscene for nicer feeling, nicer attenuation
