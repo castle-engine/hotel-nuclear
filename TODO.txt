@@ -48,7 +48,6 @@ graphics:
   for now removed headlight.
 * death anim better, it's just funny now
 * loading_image="ui/loading.png", put there keys from README too
-* change my headlight color with my current possesion
 * better anims? at least largely remake existing
 * texture on alien/human more sensible
 
@@ -69,9 +68,6 @@ g room:
 
 code room:
 * randomize on/off objects visibility
-* randomize colors somewhat?
-* greenish colors for human, red for martian
-* optim: only show room interior when needed
 
 code bug:
 * you can get door to close on a player sometimes?
