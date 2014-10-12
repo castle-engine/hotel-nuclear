@@ -21,16 +21,6 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 ------------------------------------------------------------------------------
 TODOs:
 
-now:
-* add random hints like :
-
-  From the two side rooms (to the left and right), exactly one of them contains a key.
-  From the two side rooms (to the left and right), none of them contains a key.
-  From the two side rooms (to the left and right), the left room contains a key only if the right room contains a key.
-  From the two side rooms (to the left and right), the right room contains a key only if the left room contains a key.
-  The hint on the room to the left is a lie!
-  The hint on the room to the right is a lie!
-
 graphics:
 * walls in corridor different tex
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
