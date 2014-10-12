@@ -47,6 +47,8 @@ uses SysUtils,
   GameRestarting;
 
 var
+  Map: TMap;
+
   FPossessed: TPossessed;
 
 function GetPossessed: TPossessed;
@@ -160,25 +162,23 @@ var
 
 { routines ------------------------------------------------------------------- }
 
-var
-  ResourceAlien, ResourceHuman: TWalkAttackCreatureResource;
+{ Make sure to free and clear all stuff started during the game. }
+procedure GameEnd;
+begin
+  { free 3D stuff (inside SceneManager) }
+  FreeAndNil(Player);
+
+  { free 2D stuff (including SceneManager and viewports) }
+  // FreeAndNil(SceneManager); // keep SceneManager, next GameBegin will use it
+
+  FreeAndNil(Map);
+
+  Notifications.Exists := false;
+end;
 
 procedure GameBegin(const Level: Cardinal);
-
-  { Make sure to free and clear all stuff started during the game. }
-  procedure GameEnd;
-  begin
-    { free 3D stuff (inside SceneManager) }
-    FreeAndNil(Player);
-
-    { free 2D stuff (including SceneManager and viewports) }
-    // FreeAndNil(SceneManager); // keep SceneManager, next GameBegin will use it
-
-    Notifications.Exists := false;
-  end;
-
 var
-  PlayerX, PlayerZ: Single;
+  I: Integer;
 begin
   GameEnd;
 
@@ -196,9 +196,10 @@ begin
   SceneManager.LoadLevel('hotel');
   SetAttributes(SceneManager.MainScene.Attributes);
 
-  SceneManager.Items.Add(CreateMap(Level, SceneManager.Items, SceneManager, PlayerX, PlayerZ));
+  Map := TMap.Create(Level, SceneManager.Items, SceneManager);
+  SceneManager.Items.Add(Map);
 
-  Player.Position := Vector3Single(PlayerX, Player.Position[1], PlayerZ);
+  Player.Position := Vector3Single(Map.PlayerX, Player.Position[1], Map.PlayerZ);
 
   if DesktopCamera then
   begin
@@ -221,6 +222,12 @@ begin
   Notifications.Clear;
   Notifications.CollectHistory := true;
   Notifications.Exists := true;
+
+  { spawn MinCreaturesInRooms initially, and later only at crossroads.
+    This way creatures in rooms (where there's usually lots of space) don't fill the creatures quota,
+    preventing player from opening doors. }
+  for I := 0 to Map.MinCreaturesInRooms - 1 do
+    Map.TrySpawnningInARoom;
 end;
 
 procedure GameUpdate(const SecondsPassed: Single);
@@ -230,23 +237,29 @@ const
 var
   Creature: TCreature;
   ClosestCreature: TCreature;
-  I: Integer;
+  I, AliveCreatures, MinCreaturesCount: Integer;
 const
   DistanceToPossess = 3;
 begin
   if not Player.Dead then
   begin
     ClosestCreature := nil;
+
+    AliveCreatures := 0;
     for I := 0 to SceneManager.Items.Count - 1 do
       if SceneManager.Items[I] is TCreature then
       begin
         Creature := SceneManager.Items[I] as TCreature;
+        if not Creature.Dead then
+          Inc(AliveCreatures);
         if (not Creature.Dead) and (
              (ClosestCreature = nil) or
              (PointsDistanceSqr(Creature.Position, Player.Position) <
               PointsDistanceSqr(ClosestCreature.Position, Player.Position)) ) then
           ClosestCreature := Creature;
-     end;
+      end;
+
+    //Writeln('Alive creatures: ', AliveCreatures);
 
     if (ClosestCreature <> nil) and
        (PointsDistanceSqr(ClosestCreature.Position, Player.Position) < Sqr(DistanceToPossess)) then
@@ -268,7 +281,14 @@ begin
          ( (CurrentRoom.RoomType = rtHuman) and (Possessed = posAlien) ) ) then
       Player.Life := Player.Life - SecondsPassed * LifeLossSpeed else
       Player.Life := Min(Player.MaxLife, Player.Life + SecondsPassed * LifeRegenerateSpeed);
+
+    MinCreaturesCount := Map.MinCreaturesInRooms + Map.MinCreaturesAtCrossroads;
+    if AliveCreatures < MinCreaturesCount then
+      for I := 0 to MinCreaturesCount - AliveCreatures do
+        Map.TrySpawnningAtACrossroads;
   end;
 end;
 
+finalization
+  GameEnd;
 end.

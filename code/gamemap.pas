@@ -19,31 +19,47 @@ unit GameMap;
 interface
 
 uses Classes,
-  Castle3D, CastleScene;
+  CastleVectors, Castle3D, CastleScene, CastleCreatures,
+  GameDoorsRooms;
 
-function CreateMap(const Level: Cardinal;
-  const AWorld: T3DWorld; const Owner: TComponent;
-  out PlayerX, PlayerZ: Single): T3DTransform;
+type
+  TMap = class(T3DTransform)
+  public
+    PlayerX, PlayerZ: Single;
+    SpawnPoints: TVector3SingleList;
+    MinCreaturesInRooms, MinCreaturesAtCrossroads: Cardinal;
+    RoomsX, RoomsZ: Integer;
+    Rooms: array of array of TRoom;
+    constructor Create(const Level: Cardinal; const AWorld: T3DWorld;
+      const AOwner: TComponent); reintroduce;
+    destructor Destroy; override;
+
+    function TrySpawnningInARoom: boolean;
+    function TrySpawnningAtACrossroads: boolean;
+    procedure TrySpawnning;
+  end;
+
+var
+  ResourceAlien, ResourceHuman: TWalkAttackCreatureResource;
 
 implementation
 
-uses CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
-  GameScene, GameSound, GameDoorsRooms, GamePlay;
+uses SysUtils,
+  CastleFilesUtils, CastleSceneCore, CastleTimeUtils, CastleBoxes,
+  GameScene, GameSound, GamePlay;
 
-function CreateMap(const Level: Cardinal;
-  const AWorld: T3DWorld; const Owner: TComponent;
-  out PlayerX, PlayerZ: Single): T3DTransform;
+constructor TMap.Create(const Level: Cardinal; const AWorld: T3DWorld; const AOwner: TComponent);
 
   procedure SetupBorder(const Move: TVector3Single; const Name: string);
   var
     Scene: TCastleScene;
     Transform: T3DTransform;
   begin
-    Transform := T3DTransform.Create(Owner);
-    Result.Add(Transform);
+    Transform := T3DTransform.Create(AOwner);
+    Add(Transform);
     Transform.Translation := Move;
 
-    Scene := TCastleScene.Create(Owner);
+    Scene := TCastleScene.Create(AOwner);
     Transform.Add(Scene);
     Scene.Load(ApplicationData(Name));
     SetAttributes(Scene.Attributes);
@@ -54,11 +70,12 @@ function CreateMap(const Level: Cardinal;
 const
   CorridorSize = 3.0;
 var
-  X, Z, RoomsX, RoomsZ, Division1, Division2, KeysCount: Integer;
-  Rooms: array of array of TRoom;
-  PosX, MinX, MaxX, MinZ, MaxZ: Single;
+  X, Z, Division1, Division2, KeysCount: Integer;
+  PosX, MinX, MaxX, MinZ, MaxZ, SpawnX, SpawnZ: Single;
 begin
-  Result := T3DTransform.Create(Owner);
+  inherited Create(AOwner);
+
+  SpawnPoints := TVector3SingleList.Create;
 
   case Level of
     0: begin
@@ -67,6 +84,8 @@ begin
          Division1 := 0;
          Division2 := -1;
          KeysCount := 0;
+         MinCreaturesInRooms := 1;
+         MinCreaturesAtCrossroads := 1;
        end;
     1: begin
          RoomsX := 2;
@@ -74,6 +93,8 @@ begin
          Division1 := 0;
          Division2 := -1;
          KeysCount := 1;
+         MinCreaturesInRooms := 1;
+         MinCreaturesAtCrossroads := 1;
        end;
     2: begin
          RoomsX := 4;
@@ -81,6 +102,8 @@ begin
          Division1 := 1;
          Division2 := -1;
          KeysCount := 3;
+         MinCreaturesInRooms := 3;
+         MinCreaturesAtCrossroads := 1;
        end;
     3: begin
          RoomsX := 5;
@@ -88,13 +111,18 @@ begin
          Division1 := 2;
          Division2 := 4;
          KeysCount := 8;
+         MinCreaturesInRooms := 3;
+         MinCreaturesAtCrossroads := 4;
        end;
-    else begin
+    else
+      begin
          RoomsX := 6;
          RoomsZ := 6;
          Division1 := 2;
          Division2 := 4;
          KeysCount := 8;
+         MinCreaturesInRooms := 2;
+         MinCreaturesAtCrossroads := 8;
        end;
   end;
 
@@ -105,16 +133,25 @@ begin
   for X := 0 to RoomsX - 1 do
   begin
     for Z := 0 to RoomsZ - 1 do
-      Rooms[X, Z] := TRoom.Create(Owner, PosX, ((Z + 1) div 2) * CorridorSize + RoomSizeZ * Z, not Odd(Z));
+      Rooms[X, Z] := TRoom.Create(AOwner, PosX, ((Z + 1) div 2) * CorridorSize + RoomSizeZ * Z, not Odd(Z));
 
     PosX += RoomSizeX;
     if ((X = Division1) or (X = Division2)) and (X < RoomsX - 1) then
-      PosX += CorridorSize;
-
-    if X = Division1 then
     begin
-      PlayerX := PosX - CorridorSize / 2;
-      PlayerZ := RoomSizeZ + CorridorSize / 2;
+      PosX += CorridorSize;
+      for Z := 0 to RoomsZ - 1 do
+        if Odd(Z) then
+        begin
+          SpawnX := PosX - CorridorSize / 2 - RoomSizeX;
+          SpawnZ := Z * RoomSizeZ + CorridorSize / 2;
+          SpawnPoints.Add(Vector3Single(SpawnX, 0.1, SpawnZ));
+
+          if (X = Division1) and (Z = 1) then
+          begin
+            PlayerX := SpawnX;
+            PlayerZ := SpawnZ;
+          end;
+        end;
     end;
   end;
   MaxX := PosX;
@@ -125,15 +162,11 @@ begin
   { now shift them, because they start from RotateZ }
   MinX -= RoomSizeX;
   MaxX -= RoomSizeX;
-  // MinZ -= 2 * RoomSizeZ;
-  // MaxZ -= 2 * RoomSizeZ;
-  PlayerX -= RoomSizeX;
-  // PlayerZ -= 2 * RoomSizeZ;
 
   for X := 0 to RoomsX - 1 do
     for Z := 0 to RoomsZ - 1 do
     begin
-      Result.Add(Rooms[X, Z]);
+      Add(Rooms[X, Z]);
       Rooms[X, Z].Instantiate(AWorld);
     end;
 
@@ -141,6 +174,101 @@ begin
   SetupBorder(Vector3Single(MaxX, 0, 0), 'hotel_x_positive.x3d');
   SetupBorder(Vector3Single(0, 0, MinZ), 'hotel_z_negative.x3d');
   SetupBorder(Vector3Single(0, 0, MaxZ), 'hotel_z_positive.x3d');
+end;
+
+destructor TMap.Destroy;
+begin
+  FreeAndNil(SpawnPoints);
+  inherited;
+end;
+
+function PositionClear(const P: TVector3Single): boolean;
+const
+  MinDistanceToCreature = 5.0;
+  MinDistanceToPlayer = 7.0;
+var
+  I: Integer;
+  Creature: TCreature;
+  D: Single;
+begin
+  for I := 0 to SceneManager.Items.Count - 1 do
+    if SceneManager.Items[I] is TCreature then
+    begin
+      Creature := SceneManager.Items[I] as TCreature;
+      D := PointsDistanceSqr(Creature.Position, P);
+      if D < Sqr(MinDistanceToCreature) then
+        Exit(false);
+    end;
+
+  D := PointsDistanceSqr(Player.Position, P);
+  if D < Sqr(MinDistanceToPlayer) then
+    Exit(false);
+
+  Result := true;
+end;
+
+function RandomResource: TCreatureResource;
+const
+  ChangeForAlien = 0.5;
+begin
+  if Random < ChangeForAlien then
+    Result := ResourceAlien else
+    Result := ResourceHuman;
+end;
+
+function RandomDirection: TVector3Single;
+begin
+  { any non-zero vector flat in Y }
+  Result := Normalized(Vector3Single(Random + 0.1, 0, Random + 0.1));
+end;
+
+function TMap.TrySpawnningInARoom: boolean;
+var
+  X, Z: Integer;
+  Position: TVector3Single;
+begin
+  X := Random(RoomsX);
+  Z := Random(RoomsZ);
+  if Rooms[X, Z].RoomType = rtElevator then
+    Exit(false);
+  Position := Rooms[X, Z].BoundingBox.Middle;
+  Result := PositionClear(Position);
+  if Result then
+  begin
+    { spawn resource that can breathe in this room }
+    if Rooms[X, Z].RoomType = rtAlien then
+      ResourceAlien.CreateCreature(SceneManager.Items, Position, RandomDirection) else
+      ResourceHuman.CreateCreature(SceneManager.Items, Position, RandomDirection);
+  end;
+end;
+
+function TMap.TrySpawnningAtACrossroads: boolean;
+var
+  SpawnIndex: Integer;
+  Position: TVector3Single;
+begin
+  if SpawnPoints.Count = 0 then
+    Exit(false);
+  SpawnIndex := Random(SpawnPoints.Count);
+  Position := SpawnPoints[SpawnIndex];
+  Result := PositionClear(Position);
+  if Result then
+    RandomResource.CreateCreature(SceneManager.Items, Position, RandomDirection);
+end;
+
+procedure TMap.TrySpawnning;
+const
+  ChanceToPreferRoom = 0.2;
+begin
+  if Random < ChanceToPreferRoom then
+  begin
+    if not TrySpawnningInARoom then
+      TrySpawnningAtACrossroads;
+  end else
+  begin
+    if not TrySpawnningAtACrossroads then
+      TrySpawnningInARoom;
+  end
 end;
 
 end.

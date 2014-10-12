@@ -4,7 +4,7 @@
   name="Alien"
   type="WalkAttack"
 
-  move_speed="1.4"
+  move_speed="2.8"
   default_max_life="100.0"
   middle_height="0.8"
   preferred_distance="1000.0"
@@ -19,4 +19,5 @@
     <!-- <attack url="attack.kanim" /> -->
   </model>
   <run_away life="1.0"/>
+  <visibility angle="7"/> <!-- more difficult -->
 </resource>
