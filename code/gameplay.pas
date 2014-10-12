@@ -32,6 +32,7 @@ var
 
 procedure GameBegin(const Level: Cardinal);
 procedure GameUpdate(const SecondsPassed: Single);
+procedure GamePress(const Event: TInputPressRelease);
 
 function GetPossessed: TPossessed;
 procedure SetPossessed(const Value: TPossessed);
@@ -287,6 +288,12 @@ begin
       for I := 0 to MinCreaturesCount - AliveCreatures do
         Map.TrySpawnningAtACrossroads;
   end;
+end;
+
+procedure GamePress(const Event: TInputPressRelease);
+begin
+  if Event.IsKey(K_G) then
+    BecomeAGhostButton.DoClick;
 end;
 
 finalization

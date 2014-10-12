@@ -50,7 +50,7 @@ type
     FHasRequiredKey: boolean;
     FRequiredKey: TKey;
     FRotateZ, FInsideExists: boolean;
-    Text: TStringList;
+    FText: TStringList;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
   public
@@ -66,6 +66,7 @@ type
     property Key: TKey read FKey write FKey;
     property HasRequiredKey: boolean read FHasRequiredKey write FHasRequiredKey;
     property RequiredKey: TKey read FRequiredKey write FRequiredKey;
+    property Text: TStringList read FText;
 
     { Set above properties and then call @link(Instantiate).
       AWorld is used to insert eventual items to the world, items for now
@@ -136,7 +137,7 @@ var
   R: Single;
 begin
   inherited Create(AOwner);
-  Text := TStringList.Create;
+  FText := TStringList.Create;
   R := Random;
   if R < AlienRoomChance then
     FRoomType := rtAlien else
@@ -149,6 +150,12 @@ begin
     Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
   end;
   Translation := Vector3Single(X, 0, Z);
+end;
+
+destructor TRoom.Destroy;
+begin
+  FreeAndNil(FText);
+  inherited;
 end;
 
 procedure TRoom.Instantiate(const AWorld: T3DWorld);
@@ -219,12 +226,6 @@ begin
   DoorScene.ProcessEvents := true;
 
   AddKey(AWorld);
-end;
-
-destructor TRoom.Destroy;
-begin
-  FreeAndNil(Text);
-  inherited;
 end;
 
 function TRoom.PlayerInside: boolean;

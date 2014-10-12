@@ -36,10 +36,16 @@ type
     procedure DoClick; override;
   end;
 
+  TBecomeAGhostButton = class(TCastleButton)
+  public
+    procedure DoClick; override;
+  end;
+
 var
   RestartButton: TRestartButton;
   NextLevelButton: TNextLevelButton;
   RestartCongratsButton: TRestartCongratsButton;
+  BecomeAGhostButton: TBecomeAGhostButton;
 
 procedure ButtonsAdd;
 procedure ButtonsUpdate;
@@ -53,7 +59,7 @@ function Level: Cardinal;
 implementation
 
 uses CastleWindow, CastleUIControls,
-  GameWindow, GamePlay, GameDoorsRooms;
+  GameWindow, GamePlay, GameDoorsRooms, GamePossessed;
 
 var
   FLevel: Cardinal = 0;
@@ -80,6 +86,12 @@ begin
   GameBegin(Level);
 end;
 
+procedure TBecomeAGhostButton.DoClick;
+begin
+  if (Player <> nil) and not Player.Dead then
+    Possessed := posGhost;
+end;
+
 procedure ButtonsAdd;
 begin
   RestartButton := TRestartButton.Create(Application);
@@ -102,6 +114,11 @@ begin
   RestartCongratsButton.MinWidth := RestartButton.MinWidth;
   RestartCongratsButton.MinHeight := RestartButton.MinHeight;
   Window.Controls.InsertFront(RestartCongratsButton);
+
+  BecomeAGhostButton := TBecomeAGhostButton.Create(Application);
+  BecomeAGhostButton.Caption := 'Back to ghost form [G]';
+  BecomeAGhostButton.Exists := false; // good default
+  Window.Controls.InsertFront(BecomeAGhostButton);
 end;
 
 procedure ButtonsUpdate;
@@ -109,6 +126,7 @@ begin
   RestartButton.Exists := false;
   NextLevelButton.Exists := false;
   RestartCongratsButton.Exists := false;
+  BecomeAGhostButton.Exists := false;
 
   if (Player <> nil) and Player.Dead then
   begin
@@ -122,7 +140,12 @@ begin
       RestartCongratsButton.Exists := true else
       NextLevelButton.Exists := true;
   end else
-    Player.Camera.MouseLook := true;
+  begin
+    Player.Camera.MouseLook := DesktopCamera;
+
+    { it is actually not clickable on desktop with mouse look, but it shows G key }
+    BecomeAGhostButton.Exists := (Player <> nil) and (not Player.Dead) and (Possessed <> posGhost);
+  end;
 end;
 
 procedure ButtonsResize;
@@ -135,6 +158,9 @@ begin
   NextLevelButton.AlignVertical(prTop, prMiddle, -Margin div 2);
   RestartCongratsButton.AlignHorizontal;
   RestartCongratsButton.AlignVertical(prTop, prMiddle, -Margin div 2);
+
+  BecomeAGhostButton.AlignHorizontal(prRight, prRight, -Margin div 2);
+  BecomeAGhostButton.AlignVertical(prTop, prTop, -Margin div 2);
 end;
 
 end.

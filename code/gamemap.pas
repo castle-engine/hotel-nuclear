@@ -190,6 +190,23 @@ begin
     end;
   end;
 
+  for I := 1 to Random((RoomsX * RoomsZ) div 2) do
+  begin
+    X := Random(RoomsX);
+    Z := Random(RoomsZ);
+    if Rooms[X, Z].Text.Count <> 0 then Exit; // don't overload text
+
+    if not Rooms[X, Z].HasKey then
+    begin
+      Rooms[X, Z].Text.Append('This room does not');
+      Rooms[X, Z].Text.Append('contain a key.');
+    end else
+    begin
+      Rooms[X, Z].Text.Append('This room does');
+      Rooms[X, Z].Text.Append('contain a key.');
+    end;
+  end;
+
   for X := 0 to RoomsX - 1 do
     for Z := 0 to RoomsZ - 1 do
     begin

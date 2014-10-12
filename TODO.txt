@@ -24,18 +24,12 @@ TODOs:
 now:
 * add random hints like :
 
-  This room contains a key.
-  This room does not contain a key.
   From the two side rooms (to the left and right), exactly one of them contains a key.
   From the two side rooms (to the left and right), none of them contains a key.
   From the two side rooms (to the left and right), the left room contains a key only if the right room contains a key.
   From the two side rooms (to the left and right), the right room contains a key only if the left room contains a key.
   The hint on the room to the left is a lie!
   The hint on the room to the right is a lie!
-
-* control to leave possession to ghost
-  Or maybe possession auto leaves at some point in time?
-  Maybe a special power used once with possession?
 
 graphics:
 * walls in corridor different tex
@@ -85,3 +79,10 @@ implement Focused for other backends and castlecontrol too
 note in docs: DirectionalLight.global fix. Send to blender.org.
 
 AnimationTime fix needed also in castle1?
+
+* maybe possession auto leaves at some point in time?
+  Maybe a special power used once with possession?
+
+  for now, manual is ok, to prevent from other creatures blocking spawning of new
+
+test on android
