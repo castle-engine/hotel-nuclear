@@ -101,22 +101,19 @@ const
 var
   R: TRectangle;
   LineNum, I, X, Y: Integer;
-  Color: TCastleColor;
   S: string;
 begin
   if Player.Dead then
     GLFadeRectangle(ContainerRect, Red, 1.0) else
     GLFadeRectangle(ContainerRect, Player.FadeOutColor, Player.FadeOutIntensity);
 
-  Color := PossessedColor[Possessed];
-  Color[3] := 0.9;
   R := Rectangle(UIMargin, ContainerHeight - UIMargin - 100, 40, 100);
   DrawRectangle(R.Grow(2), Vector4Single(1.0, 0.5, 0.5, 0.2));
   if not Player.Dead then
   begin
     R.Height := Clamped(Round(
       MapRange(Player.Life, 0, Player.MaxLife, 0, R.Height)), 0, R.Height);
-    DrawRectangle(R, Color);
+    DrawRectangle(R, Vector4Single(1.0, 0, 0, 0.9));
   end;
 
   LineNum := 1;
@@ -126,7 +123,7 @@ begin
   Inc(LineNum);
 
   UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
-    Color, PossessedName[Possessed]);
+    PossessedColor[Possessed], PossessedName[Possessed]);
   Inc(LineNum);
 
   { note: show this even when Player.Dead, since that's where you usually have time to read this... }
@@ -134,7 +131,7 @@ begin
      (CurrentRoom.Ownership <> Possessed) then
   begin
     UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
-      Color, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
+      Red, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
       [PossessedNameShort[CurrentRoom.Ownership], PossessedNameShort[Possessed] ]));
     Inc(LineNum);
   end;
@@ -148,8 +145,8 @@ begin
   begin
     X := UIMargin + I * (InventoryImageSize + UIMargin);
     Player.Inventory[I].Resource.GLImage.Draw(X, Y);
-    S := Player.Inventory[I].Resource.Caption;
-    UIFontSmall.Print(X, Y - UIFontSmall.RowHeight, Color, S);
+    // S := Player.Inventory[I].Resource.Caption;
+    // UIFontSmall.Print(X, Y - UIFontSmall.RowHeight, Gray, S);
   end;
 end;
 

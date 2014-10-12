@@ -42,16 +42,16 @@ function CreateMap(const AWorld: T3DWorld; const Owner: TComponent): T3DTransfor
 
 const
   CorridorSize = 3.0;
+  RoomsX = 5;
+  RoomsZ = 3;
+var
+  X, Z: Integer;
 begin
   Result := T3DTransform.Create(Owner);
 
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 0, RoomSizeZ * 0, false);
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 1, RoomSizeZ * 0, false);
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 2, RoomSizeZ * 0, false);
-
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 0, -RoomSizeZ * 1 - CorridorSize, true);
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 1, -RoomSizeZ * 1 - CorridorSize, true);
-  TestRoomCreate(AWorld, Owner, RoomSizeX * 2, -RoomSizeZ * 1 - CorridorSize, true);
+  for X := 0 to RoomsX - 1 do
+    for Z := 0 to RoomsZ - 1 do
+      TestRoomCreate(AWorld, Owner, RoomSizeX * X, ((Z + 1) div 2) * CorridorSize + RoomSizeZ * Z, not Odd(Z));
 end;
 
 end.
