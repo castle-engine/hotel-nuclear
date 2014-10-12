@@ -39,16 +39,17 @@ type
     keyYellow
   );
 
+  TRoomType = (rtAlien, rtHuman, rtElevator);
+
   TRoom = class(T3DTransform)
   strict private
-    FOwnership: TPossessed;
+    FRoomType: TRoomType;
     FHasKey: boolean;
     FKey: TKey;
     FHasRequiredKey: boolean;
     FRequiredKey: TKey;
     FRotateZ, FInsideExists: boolean;
     Text: TStringList;
-    FElevator: boolean;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
   public
@@ -58,19 +59,20 @@ type
     property InsideExists: boolean read GetInsideExists write SetInsideExists;
     function PlayerInside: boolean;
 
-    property Ownership: TPossessed read FOwnership;
+    property RoomType: TRoomType read FRoomType write FRoomType;
 
     property HasKey: boolean read FHasKey write FHasKey;
     property Key: TKey read FKey write FKey;
     property HasRequiredKey: boolean read FHasRequiredKey write FHasRequiredKey;
     property RequiredKey: TKey read FRequiredKey write FRequiredKey;
 
-    property Elevator: boolean read FElevator write FElevator;
-
     { Set above properties and then call @link(Instantiate).
       AWorld is used to insert eventual items to the world, items for now
       must be top-level in scene magager hierarchy. }
     procedure Instantiate(const AWorld: T3DWorld);
+
+    { If this room contains elevator, and player is standing in it. }
+    function PlayerInsideElevator: boolean;
   end;
 
   TDoor = class(T3DLinearMoving)
@@ -110,9 +112,8 @@ const
   );
 
 var
-  { To conserve memory and loading time, we actually have only 2 room inside loaded at a time, indexed by Alien:boolean. }
-  InsideTemplate: array [boolean] of TCastleScene;
-  InsideTemplateElevator: TCastleScene;
+  { To conserve memory and loading time, we actually reuse room inside. }
+  InsideTemplate: array [TRoomType] of TCastleScene;
 
 implementation
 
@@ -137,8 +138,10 @@ begin
   Text := TStringList.Create;
   R := Random;
   if R < AlienRoomChance then
-    FOwnership := posAlien else
-    FOwnership := posHuman;
+    FRoomType := rtAlien else
+    FRoomType := rtHuman;
+  if Random < 0.5 then
+    FRoomType := rtElevator;
 
   FRotateZ := ARotateZ;
   if FRotateZ then
@@ -193,8 +196,8 @@ begin
     Text.Insert(1, 'to open.');
   end;
 
-  if Random < 0.5 then
-    Elevator := true;
+  if FRoomType = rtElevator then
+    Text.Insert(0, 'ELEVATOR.');
 
   { Inside and Outside are splitted, to enable separate ExcludeFromGlobalLights values,
     and to allow optimization to only show 1 inside,
@@ -217,7 +220,10 @@ begin
   DoorScene := TCastleScene.Create(Owner);
   Door.Add(DoorScene);
   DoorScene.Load(ApplicationData('door.x3dv'));
-  ColorizeScene(DoorScene, PossessedColor[FOwnership], 0.5);
+  if FRoomType = rtAlien then
+    ColorizeScene(DoorScene, PossessedColor[posAlien], 0.5) else
+  if FRoomType = rtHuman then
+    ColorizeScene(DoorScene, PossessedColor[posHuman], 0.5);
   SetAttributes(DoorScene.Attributes);
   SetText(DoorScene);
   DoorScene.Spatial := [ssRendering, ssDynamicCollisions];
@@ -242,6 +248,17 @@ begin
   Result := FInsideExists;
 end;
 
+function TRoom.PlayerInsideElevator: boolean;
+const
+  LocalElevatorBox: TBox3D = (Data: (
+    (-4.36, -2.50, 5.15),
+    (-2.56, 5.34, 6.95)
+  ));
+begin
+  Result := (RoomType = rtElevator) and
+    LocalElevatorBox.Translate(Translation).PointInside(Player.Position);
+end;
+
 procedure TRoom.SetInsideExists(const Value: boolean);
 var
   Scene: TCastleScene;
@@ -249,9 +266,7 @@ begin
   if FInsideExists <> Value then
   begin
     FInsideExists := Value;
-    if Elevator then
-      Scene := InsideTemplateElevator else
-      Scene := InsideTemplate[FOwnership = posAlien];
+    Scene := InsideTemplate[FRoomType];
     if FInsideExists then
       Add(Scene) else
       Remove(Scene);

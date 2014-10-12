@@ -64,30 +64,23 @@ end;
 
 procedure WindowOpen(Container: TUIContainer);
 var
-  Alien: boolean;
+  RoomType: TRoomType;
 begin
-  for Alien := false to true do
-    if InsideTemplate[Alien] = nil then
+  for RoomType := Low(TRoomType) to High(TRoomType) do
+    if InsideTemplate[RoomType] = nil then
     begin
-      InsideTemplate[Alien] := TCastleScene.Create(Window);
-      InsideTemplate[Alien].Load(ApplicationData('room.x3dv'));
-      SetAttributes(InsideTemplate[Alien].Attributes);
-      InsideTemplate[Alien].Spatial := [ssRendering, ssDynamicCollisions];
-      InsideTemplate[Alien].ProcessEvents := true;
-      InsideTemplate[Alien].ExcludeFromGlobalLights := true;
-      if Alien then
-        ColorizeScene(InsideTemplate[Alien], PossessedColor[posAlien], 0.5) else
-        ColorizeScene(InsideTemplate[Alien], PossessedColor[posHuman], 0.5);
-    end;
-
-    if InsideTemplateElevator = nil then
-    begin
-      InsideTemplateElevator := TCastleScene.Create(Window);
-      InsideTemplateElevator.Load(ApplicationData('elevator.x3d'));
-      SetAttributes(InsideTemplateElevator.Attributes);
-      InsideTemplateElevator.Spatial := [ssRendering, ssDynamicCollisions];
-      InsideTemplateElevator.ProcessEvents := true;
-      InsideTemplateElevator.ExcludeFromGlobalLights := true;
+      InsideTemplate[RoomType] := TCastleScene.Create(Window);
+      if RoomType = rtElevator then
+        InsideTemplate[RoomType].Load(ApplicationData('elevator.x3d')) else
+        InsideTemplate[RoomType].Load(ApplicationData('room.x3dv'));
+      SetAttributes(InsideTemplate[RoomType].Attributes);
+      InsideTemplate[RoomType].Spatial := [ssRendering, ssDynamicCollisions];
+      InsideTemplate[RoomType].ProcessEvents := true;
+      InsideTemplate[RoomType].ExcludeFromGlobalLights := true;
+      if RoomType = rtAlien then
+        ColorizeScene(InsideTemplate[RoomType], PossessedColor[posAlien], 0.5) else
+      if RoomType = rtHuman then
+        ColorizeScene(InsideTemplate[RoomType], PossessedColor[posHuman], 0.5);
     end;
 
   GameBegin;

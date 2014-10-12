@@ -22,8 +22,6 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* place elevator behind closed doors
-* elevator 3d
 * randomize labirythm sensibly, to place some keys behind some closed doors, and make sure it's still solvable
 * sometimes deliberately spawn in rooms of the same ownership, sometimes on corridor crossings
 * add random hints like :
@@ -41,6 +39,7 @@ now:
   Or maybe possession auto leaves at some point in time?
   Maybe a special power used once with possession?
 * generate whole floor, use borders to delimit
+* male elevator work: game over, or next level
 
 graphics:
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!

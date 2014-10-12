@@ -98,6 +98,10 @@ const
   ( 'ghost',
     'martian',
     'earthling' );
+  RoomTypeName: array [TRoomType] of string =
+  ( 'martian',
+    'earthling',
+    'elevator' );
 var
   R: TRectangle;
   LineNum, I, X, Y: Integer;
@@ -127,11 +131,12 @@ begin
 
   { note: show this even when Player.Dead, since that's where you usually have time to read this... }
   if (CurrentRoom <> nil) and
-     (CurrentRoom.Ownership <> Possessed) then
+     ( ( (CurrentRoom.RoomType = rtAlien) and (Possessed = posHuman) ) or
+       ( (CurrentRoom.RoomType = rtHuman) and (Possessed = posAlien) ) ) then
   begin
     UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
       Red, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
-      [PossessedNameShort[CurrentRoom.Ownership], PossessedNameShort[Possessed] ]));
+      [RoomTypeName[CurrentRoom.RoomType], PossessedNameShort[Possessed] ]));
   end;
   Inc(LineNum);
 
@@ -259,7 +264,8 @@ begin
     end;
 
     if (CurrentRoom <> nil) and
-       (CurrentRoom.Ownership <> Possessed) then
+       ( ( (CurrentRoom.RoomType = rtAlien) and (Possessed = posHuman) ) or
+         ( (CurrentRoom.RoomType = rtHuman) and (Possessed = posAlien) ) ) then
       Player.Life := Player.Life - SecondsPassed * LifeLossSpeed else
       Player.Life := Min(Player.MaxLife, Player.Life + SecondsPassed * LifeRegenerateSpeed);
   end;
