@@ -38,7 +38,6 @@ now:
 * control to leave possession to ghost
   Or maybe possession auto leaves at some point in time?
   Maybe a special power used once with possession?
-* generate whole floor, use borders to delimit
 
 graphics:
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!

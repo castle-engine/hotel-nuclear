@@ -24,7 +24,6 @@ uses CastleVectors, CastleSceneManager, CastlePlayer, CastleLevels, CastleColors
 
 var
   SceneManager: TGameSceneManager;
-  DebugSpeed: boolean = false;
   Player: TPlayer;
   DesktopCamera: boolean =
     {$ifdef ANDROID} false {$else}
@@ -178,6 +177,8 @@ procedure GameBegin(const Level: Cardinal);
     Notifications.Exists := false;
   end;
 
+var
+  PlayerX, PlayerZ: Single;
 begin
   GameEnd;
 
@@ -195,16 +196,13 @@ begin
   SceneManager.LoadLevel('hotel');
   SetAttributes(SceneManager.MainScene.Attributes);
 
-  SceneManager.Items.Add(CreateMap(Level, SceneManager.Items, SceneManager));
+  SceneManager.Items.Add(CreateMap(Level, SceneManager.Items, SceneManager, PlayerX, PlayerZ));
 
-  if DebugSpeed then
-    Player.Camera.MoveSpeed := 10;
+  Player.Position := Vector3Single(PlayerX, Player.Position[1], PlayerZ);
 
   if DesktopCamera then
   begin
     Player.Camera.MouseLook := true;
-    Player.Camera.MouseDraggingHorizontalRotationSpeed := 0.5 / (Window.Dpi / DefaultDPI);
-    Player.Camera.MouseDraggingVerticalRotationSpeed := 0;
     Window.TouchInterface := etciNone;
   end else
   begin

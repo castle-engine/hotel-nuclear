@@ -104,7 +104,9 @@ begin
   if Event.IsKey(K_F5) then
     Window.SaveScreen(FileNameAutoInc(ApplicationName + '_screen_%d.png'));
   if Event.IsKey(K_Escape) then
-    Application.Quit;
+    Application.Quit else
+  if Event.IsKey(K_8) then
+    NextLevelButton.DoClick;
 end;
 
 function MyGetApplicationName: string;
