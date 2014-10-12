@@ -36,7 +36,7 @@ implementation
 uses SysUtils,
   CastleUIControls, CastleRectangles, CastleGLUtils, CastleColors,
   CastleVectors, CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
-  GameWindow, GameScene, GameMap;
+  GameWindow, GameScene, GameMap, GameDoors;
 
 { TGame2DControls ------------------------------------------------------------ }
 
@@ -121,7 +121,7 @@ begin
     Window.AutomaticTouchInterface := true;
   end;
 
-  AllDoorsClosed := true;
+  CurrentlyOpenDoor := nil;
 end;
 
 end.

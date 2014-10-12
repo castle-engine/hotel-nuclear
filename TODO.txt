@@ -40,7 +40,6 @@ now:
   The hint on the room to the left is a lie!
   The hint on the room to the right is a lie!
 
-* optimize: show only visible room
 * generate whole floor, use borders to delimit
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.

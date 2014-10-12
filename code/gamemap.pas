@@ -21,105 +21,12 @@ interface
 uses Classes,
   Castle3D, CastleScene;
 
-var
-  AllDoorsClosed: boolean = true; // TODO: always true
-
 function CreateMap(const Owner: TComponent): T3DTransform;
 
 implementation
 
 uses CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
-  GameScene, GameSound;
-
-type
-  TDoor = class(T3DLinearMoving)
-  public
-    StayOpenTime: Single;
-
-    constructor Create(AOwner: TComponent); override;
-
-    procedure BeforeTimeIncrease(const NewTime: TFloatTime); override;
-    procedure Update(const SecondsPassed: Single; var RemoveMe: TRemoveType); override;
-
-    property Pushes default false;
-
-    function PointingDeviceActivate(const Active: boolean;
-      const Distance: Single): boolean; override;
-  end;
-
-{ TDoor ------------------------------------------------------------- }
-
-constructor TDoor.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Pushes := false;
-  SoundGoEndPosition := stDoorOpen;
-  SoundGoBeginPosition := stDoorClose;
-end;
-
-procedure TDoor.BeforeTimeIncrease(const NewTime: TFloatTime);
-
-  function SomethingWillBlockClosingDoor: boolean;
-  var
-    DoorBox: TBox3D;
-    I: Integer;
-  begin
-    DoorBox := (inherited BoundingBox).Translate(
-      GetTranslationFromTime(NewTime) - GetTranslation);
-
-    Result := false;
-
-    for I := 0 to World.Count - 1 do
-      if World[I].CollidesWithMoving then
-      begin
-        Result := DoorBox.Collision(World[I].BoundingBox);
-        if Result then
-          Exit;
-      end;
-  end;
-
-begin
-  inherited;
-
-  { Check the closing doors: if some 3D item with CollidesWithMoving=@true
-    will collide after Time change to NewTime, then we must open door again. }
-
-  if (not EndPosition) and
-    (AnimationTime - EndPositionStateChangeTime < MoveTime) and
-    SomethingWillBlockClosingDoor then
-    RevertGoEndPosition;
-end;
-
-procedure TDoor.Update(const SecondsPassed: Single; var RemoveMe: TRemoveType);
-begin
-  inherited;
-
-  if EndPosition and
-    (AnimationTime - EndPositionStateChangeTime >
-      MoveTime + StayOpenTime) then
-    GoBeginPosition;
-end;
-
-function TDoor.PointingDeviceActivate(const Active: boolean;
-  const Distance: Single): boolean;
-const
-  DistanceToInteract = 5;
-begin
-  Result := Active;
-  if not Result then Exit;
-
-  if (Distance < DistanceToInteract) and
-      { Only if the door is completely closed
-        (and not during closing right now) we allow player to open it. }
-     CompletelyBeginPosition and
-     AllDoorsClosed then
-  begin
-    GoEndPosition;
-    Result := true;
-  end;
-end;
-
-{ routines ------------------------------------------------------------------- }
+  GameScene, GameSound, GameDoors, GamePlay;
 
 function CreateMap(const Owner: TComponent): T3DTransform;
 const
@@ -150,6 +57,7 @@ const
     Inside.Spatial := [ssRendering, ssDynamicCollisions];
     Inside.ProcessEvents := true;
     Inside.ExcludeFromGlobalLights := true;
+    Inside.Exists := Inside.BoundingBox.Translate(Result.Translation).PointInside(Player.Position); // will be turned on when appropriate door opens
 
     Outside := TCastleScene.Create(Owner);
     Result.Add(Outside);
@@ -163,6 +71,8 @@ const
     Door.MoveTime := 1.0;
     Door.TranslationEnd := Vector3Single(0, 2.92, 0);
     Door.StayOpenTime := 4.0;
+    Door.Room := Inside;
+    Door.RoomTranslation := Result.Translation;
 
     DoorScene := TCastleScene.Create(Owner);
     Door.Add(DoorScene);

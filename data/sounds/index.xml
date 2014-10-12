@@ -4,4 +4,8 @@
   <sound name="door_open" default_importance="level_event" />
   <sound name="door_close" default_importance="level_event" />
   <sound name="squish" default_importance="level_event" />
+
+  <!-- Will be automatically used by CastleSceneManager -->
+  <sound name="player_interact_failed"
+    default_importance="player"/>
 </sounds>
