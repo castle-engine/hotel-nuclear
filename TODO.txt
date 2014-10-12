@@ -39,7 +39,6 @@ now:
   Or maybe possession auto leaves at some point in time?
   Maybe a special power used once with possession?
 * generate whole floor, use borders to delimit
-* male elevator work: game over, or next level
 
 graphics:
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!

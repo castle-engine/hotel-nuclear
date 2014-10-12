@@ -46,7 +46,7 @@ procedure ButtonsUpdate;
 procedure ButtonsResize;
 
 const
-  MaxLevel = 2;
+  MaxLevel = 4;
 
 function Level: Cardinal;
 

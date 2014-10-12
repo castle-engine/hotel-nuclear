@@ -85,7 +85,7 @@ begin
         ColorizeScene(InsideTemplate[RoomType], PossessedColor[posHuman], 0.5);
     end;
 
-  GameBegin(0);
+  GameBegin(Level);
 end;
 
 procedure WindowResize(Container: TUIContainer);
