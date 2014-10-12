@@ -28,8 +28,8 @@
 				<Group DEF="group_ME_Cube_007">
 					<Shape>
 						<Appearance>
-							<ImageTexture DEF="IM_floor_texture_0_jpg"
-							              url='"textures/floor texture_0.jpg" "floor texture_0.jpg"'
+							<ImageTexture DEF="IM_floor_texture_0_png"
+							              url='"textures/floor texture_0.png" "floor texture_0.png"'
 							              />
 							<Material DEF="MA_mat_floor"
 							          diffuseColor="0.383 0.383 0.383"

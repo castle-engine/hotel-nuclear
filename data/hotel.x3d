@@ -78,8 +78,8 @@
 					</Shape>
 					<Shape>
 						<Appearance>
-							<ImageTexture DEF="IM_floor_texture_0_jpg"
-							              url='"textures/floor texture_0.jpg" "floor texture_0.jpg"'
+							<ImageTexture DEF="IM_floor_texture_0_png"
+							              url='"textures/floor texture_0.png" "floor texture_0.png"'
 							              />
 							<Material USE="MA_mat_floor" />
 						</Appearance>

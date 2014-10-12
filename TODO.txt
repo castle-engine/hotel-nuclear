@@ -22,22 +22,33 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* alien, human, animal - with anims!
-* gen, room is 7x12
+* alien, human - with anims of running, would be nice to also have die
+* ai of hunting, possessing
+* enter a room: colorize room, for alien or earth.
+* pickup keys, show picked up
+* doors opening, visualize which key to which
+* randomize labirythm, to place some keys behind some closed doors
+* place elevator behind closed doors
+* elevator 3d
 
-* change my headlight color with my current possesion
+* optimize: show only visible room
+* generate whole floor, use borders to delimit
 
 graphics:
 * loading_image="ui/loading.png"
+* change my headlight color with my current possesion
 
 g corridor and room:
 * use shadows and shadow maps, easy geom -> make effects!
-* slight animation of light color and position
-* tex room_outside suggests exterior, not interior.
+* tex room_outside still suggests exterior, not interior. More wall-like texture find.
 * doors rectangular?
+* slight animation of light color and position for headlight?
+* Make headlightNode.location summed to player loc, not replaced by, to push light in front?
+* corridor tex: like a carpet over a tiling texture, make a couple of variations and use --- one for 4 cross, one for turn left/right, one for T crossing...
 
 g room:
-* adjust lights using view3dscene for nicer feeling, nicer attenuation
+* slight animation of light color and position?
+* adjust lights using view3dscene for nicer feeling, nicer attenuation. Or bake for Android?
 * add more textures and colors
 * use window better, show something behind curtain? curtain reshow? or not?
 * use picture frame better, show something on image.
@@ -60,9 +71,7 @@ android:
 * fix bump mapping in engine
 * bake stuff, to have local lights visible
 
-remake to jpg for smaller size, when final packing?
-
-android fix sounds
+remake all textures to jpg for smaller size, when final packing?
 
 implement Focused for other backends and castlecontrol too
 
