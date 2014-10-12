@@ -210,7 +210,7 @@ begin
       end;
 
       Rooms[X, Z].Text.Append('Hint: The hint on a room');
-      Rooms[X, Z].Text.Append('to the left IS A LIE.');
+      Rooms[X, Z].Text.Append('to the right IS A LIE.');
     end else
     begin
       if not Rooms[X, Z].HasKey then

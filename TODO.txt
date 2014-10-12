@@ -22,7 +22,6 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 graphics:
-* walls in corridor different tex
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.
   for now removed headlight.
