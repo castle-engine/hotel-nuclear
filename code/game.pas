@@ -80,6 +80,16 @@ begin
         ColorizeScene(InsideTemplate[Alien], PossessedColor[posHuman], 0.5);
     end;
 
+    if InsideTemplateElevator = nil then
+    begin
+      InsideTemplateElevator := TCastleScene.Create(Window);
+      InsideTemplateElevator.Load(ApplicationData('elevator.x3d'));
+      SetAttributes(InsideTemplateElevator.Attributes);
+      InsideTemplateElevator.Spatial := [ssRendering, ssDynamicCollisions];
+      InsideTemplateElevator.ProcessEvents := true;
+      InsideTemplateElevator.ExcludeFromGlobalLights := true;
+    end;
+
   GameBegin;
 end;
 

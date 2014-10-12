@@ -48,6 +48,7 @@ type
     FRequiredKey: TKey;
     FRotateZ, FInsideExists: boolean;
     Text: TStringList;
+    FElevator: boolean;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
   public
@@ -63,6 +64,8 @@ type
     property Key: TKey read FKey write FKey;
     property HasRequiredKey: boolean read FHasRequiredKey write FHasRequiredKey;
     property RequiredKey: TKey read FRequiredKey write FRequiredKey;
+
+    property Elevator: boolean read FElevator write FElevator;
 
     { Set above properties and then call @link(Instantiate).
       AWorld is used to insert eventual items to the world, items for now
@@ -109,6 +112,7 @@ const
 var
   { To conserve memory and loading time, we actually have only 2 room inside loaded at a time, indexed by Alien:boolean. }
   InsideTemplate: array [boolean] of TCastleScene;
+  InsideTemplateElevator: TCastleScene;
 
 implementation
 
@@ -189,6 +193,9 @@ begin
     Text.Insert(1, 'to open.');
   end;
 
+  if Random < 0.5 then
+    Elevator := true;
+
   { Inside and Outside are splitted, to enable separate ExcludeFromGlobalLights values,
     and to allow optimization to only show 1 inside,
     and to allow actually loading only 1 inside. }
@@ -236,13 +243,18 @@ begin
 end;
 
 procedure TRoom.SetInsideExists(const Value: boolean);
+var
+  Scene: TCastleScene;
 begin
   if FInsideExists <> Value then
   begin
     FInsideExists := Value;
+    if Elevator then
+      Scene := InsideTemplateElevator else
+      Scene := InsideTemplate[FOwnership = posAlien];
     if FInsideExists then
-      Add(InsideTemplate[FOwnership = posAlien]) else
-      Remove(InsideTemplate[FOwnership = posAlien]);
+      Add(Scene) else
+      Remove(Scene);
   end;
 end;
 

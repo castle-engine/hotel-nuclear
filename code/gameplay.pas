@@ -106,7 +106,7 @@ begin
     GLFadeRectangle(ContainerRect, Red, 1.0) else
     GLFadeRectangle(ContainerRect, Player.FadeOutColor, Player.FadeOutIntensity);
 
-  R := Rectangle(UIMargin, ContainerHeight - UIMargin - 100, 40, 100);
+  R := Rectangle(UIMargin, ContainerHeight - UIMargin - 120, 40, 120);
   DrawRectangle(R.Grow(2), Vector4Single(1.0, 0.5, 0.5, 0.2));
   if not Player.Dead then
   begin
@@ -132,8 +132,8 @@ begin
     UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
       Red, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
       [PossessedNameShort[CurrentRoom.Ownership], PossessedNameShort[Possessed] ]));
-    Inc(LineNum);
   end;
+  Inc(LineNum);
 
   Notifications.PositionX := R.Right + UIMargin;
   Notifications.PositionY := - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - UIMargin;
