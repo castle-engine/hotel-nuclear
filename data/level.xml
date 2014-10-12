@@ -6,6 +6,8 @@
   number="1"
   type="Level"
   placeholders="blender"
+  loading_image="ui/loading.png"
+  loading_bar_y_position="0.1"
 >
   <prepare_resources>
      <resource name="Alien" />

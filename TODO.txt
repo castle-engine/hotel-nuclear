@@ -26,7 +26,7 @@ graphics:
   Rethink headlight look.
   for now removed headlight.
 * death anim better, it's just funny now
-* loading_image="ui/loading.png", put there keys from README too
+* put there keys from README too
 * better anims? at least largely remake existing
 * texture on alien/human more sensible
 
