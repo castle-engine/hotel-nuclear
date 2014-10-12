@@ -8,7 +8,7 @@
 BUILD=debug
 
 .PHONY: default
-default: data
+default: data icons
 	cd ../ && castle-engine compile --mode=release --os=android --cpu=arm
 	mkdir -p libs/armeabi/
 	cp -f ../code/libhotel_nuclear_android.so libs/armeabi/libhotel_nuclear_android.so
@@ -31,8 +31,8 @@ data:
 clean:
 	rm -Rf bin/ gen/ libs/ obj/ assets/ ../code/libhotel_nuclear_android.so
 
-# Autogenerate ic_launcher based on ../../store-graphics/icon.png
-ICON_SOURCE:=../../store-graphics/icon.png
+# Autogenerate ic_launcher based on ../store-graphics/icon.png
+ICON_SOURCE:=../store-graphics/icon.png
 .PHONY: icons
 icons:
 	mkdir -p res/drawable-ldpi/ \
