@@ -50,6 +50,8 @@ type
     { @groupEnd }
     FHasKey: boolean;
     FKey: TKey;
+    FHasRequiredKey: boolean;
+    FRequiredKey: TKey;
     FRotateZ: boolean;
     function GetInsideExists: boolean;
     procedure SetInsideExists(const Value: boolean);
@@ -62,6 +64,8 @@ type
     property Ownership: TPossessed read FOwnership;
     property HasKey: boolean read FHasKey;
     property Key: TKey read FKey;
+    property HasRequiredKey: boolean read FHasRequiredKey;
+    property RequiredKey: TKey read FRequiredKey;
     procedure AddKey(const AWorld: T3DWorld);
   end;
 
@@ -107,6 +111,11 @@ uses SysUtils,
   CastleGameNotifications, CastleSoundEngine, X3DFields, CastleResources,
   GameScene, GameSound, GamePlay;
 
+function KeyResource(const Key: TKey): TItemResource;
+begin
+  Result := Resources.FindName('KeyCard' + KeyName[Key]) as TItemResource;
+end;
+
 { TRoom ---------------------------------------------------------------------- }
 
 constructor TRoom.Create(const AWorld: T3DWorld; const AOwner: TComponent; const X, Z: Single; const ARotateZ: boolean);
@@ -140,6 +149,11 @@ begin
   R := Random;
   FHasKey := R < 0.5;
   FKey := TKey(Random(Ord(High(TKey)) + 1));
+
+  { TODO: required key should be randomized globally. Also check for solvability. }
+  R := Random;
+  FHasRequiredKey := R < 0.5;
+  FRequiredKey := TKey(Random(Ord(High(TKey)) + 1));
 
   FRotateZ := ARotateZ;
   if ARotateZ then
@@ -195,7 +209,7 @@ begin
   if HasKey then
   begin
     Position := LocalToOutside(Vector3Single(-0.385276, 0.625180, 10.393058));
-    ItemResource := Resources.FindName('KeyCard' + KeyName[Key]) as TItemResource;
+    ItemResource := KeyResource(Key);
     ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
   end;
 end;
@@ -322,6 +336,12 @@ begin
     if Possessed = posGhost then
     begin
       Notifications.Show('Cannot open door when not material. Possess someone first.');
+      SoundEngine.Sound(stPlayerInteractFailed);
+    end else
+    if Room.HasRequiredKey and
+       (Player.Inventory.FindResource(KeyResource(Room.RequiredKey)) = -1 ) then
+    begin
+      Notifications.Show(Format('You need "%s" key card to open this room. Look for it in other rooms.', [KeyName[Room.RequiredKey]]));
       SoundEngine.Sound(stPlayerInteractFailed);
     end else
     begin

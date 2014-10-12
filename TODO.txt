@@ -22,8 +22,8 @@ https://www.google.pl/search?biw=1760&bih=811&tbm=isch&q=hotel+suite+plan&revid=
 TODOs:
 
 now:
-* doors opening locked by keys, visualize which key to which
-* randomize labirythm, to place some keys behind some closed doors
+* write text which key is required on door
+* randomize labirythm sensibly, to place some keys behind some closed doors, and make sure it's still solvable
 * place elevator behind closed doors
 * elevator 3d
 * add random hints like :
@@ -38,17 +38,19 @@ now:
   The hint on the room to the right is a lie!
 
 * control to leave possession to ghost
-  Or maybe possession auto leaves at some point?
+  Or maybe possession auto leaves at some point in time?
   Maybe a special power used once with possession?
 * generate whole floor, use borders to delimit
+
+graphics:
 * nicer local lights, we really must fix corridors graphic look, local light over every tile + room walls!
   Rethink headlight look.
   for now removed headlight.
-
-graphics:
+* death anim better, it's just funny now
 * loading_image="ui/loading.png", put there keys from README too
 * change my headlight color with my current possesion
 * better anims? at least largely remake existing
+* texture on alien/human more sensible
 
 g corridor and room:
 * use shadows and shadow maps, easy geom -> make effects!
