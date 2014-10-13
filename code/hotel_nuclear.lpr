@@ -44,14 +44,15 @@ end;
 begin
   Config.Load;
 
-  {$ifdef UNIX}
-  InitializeLog(Version);
-  {$endif}
-
   SoundEngine.ParseParameters; { after Config.Load, to be able to turn off sound }
   Window.FullScreen := true;
   Window.ParseParameters;
   Parameters.Parse(Options, @OptionProc, nil);
+
+  {$ifdef UNIX}
+  { Note: do this after handling options, to handle --version first }
+  InitializeLog(Version);
+  {$endif}
 
   Application.Initialize;
   Window.OpenAndRun;
