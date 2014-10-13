@@ -44,6 +44,7 @@ uses SysUtils,
   CastleUIControls, CastleRectangles, CastleGLUtils, X3DNodes, CastleLog,
   CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
   CastleSoundEngine, CastleCreatures, CastleResources, CastleGameNotifications,
+  CastleScene, CastleSceneCore, CastleFilesUtils,
   GameWindow, GameScene, GameMap, GameDoorsRooms, GameSound,
   GameRestarting;
 
@@ -180,6 +181,7 @@ end;
 procedure GameBegin(const Level: Cardinal);
 var
   I: Integer;
+  RoomType: TRoomType;
 begin
   GameEnd;
 
@@ -196,6 +198,23 @@ begin
 
   SceneManager.LoadLevel('hotel');
   SetAttributes(SceneManager.MainScene.Attributes);
+
+  for RoomType := Low(TRoomType) to High(TRoomType) do
+    if InsideTemplate[RoomType] = nil then
+    begin
+      InsideTemplate[RoomType] := TCastleScene.Create(Window);
+      if RoomType = rtElevator then
+        InsideTemplate[RoomType].Load(ApplicationData('elevator.x3d')) else
+        InsideTemplate[RoomType].Load(ApplicationData('room.x3dv'));
+      SetAttributes(InsideTemplate[RoomType].Attributes);
+      InsideTemplate[RoomType].Spatial := [ssRendering, ssDynamicCollisions];
+      InsideTemplate[RoomType].ProcessEvents := true;
+      InsideTemplate[RoomType].ExcludeFromGlobalLights := true;
+      if RoomType = rtAlien then
+        ColorizeScene(InsideTemplate[RoomType], PossessedColor[posAlien], 0.5) else
+      if RoomType = rtHuman then
+        ColorizeScene(InsideTemplate[RoomType], PossessedColor[posHuman], 0.5);
+    end;
 
   Map := TMap.Create(Level, SceneManager.Items, SceneManager);
   SceneManager.Items.Add(Map);
