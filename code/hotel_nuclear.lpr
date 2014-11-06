@@ -17,6 +17,11 @@
 
 { "Hotel Nuclear" standalone game binary. }
 program hotel_nuclear;
+
+{$ifdef MSWINDOWS}
+  {$R ../automatic-windows-resources.res}
+{$endif MSWINDOWS}
+
 uses CastleWindow, CastleConfig, CastleParameters, CastleLog, CastleUtils,
   CastleSoundEngine, CastleClassUtils,
   Game, GameWindow, GamePlay;
