@@ -6,7 +6,7 @@
   <icons>
     <icon path="store-graphics/icon.ico" />
   </icons>
-  <version name="1.0.0" />
+  <version value="1.0.0" code="3" />
   <package>
     <include path="COPYING.GPL2.txt" />
   </package>
