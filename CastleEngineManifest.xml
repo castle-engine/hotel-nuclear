@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="hotel_nuclear"
+  caption="Hotel Nuclear"
+  qualified_name="net.sourceforge.castleengine.hotelnuclear"
   standalone_source="code/hotel_nuclear.lpr"
   android_source="code/hotel_nuclear_android.lpr"
   author="Michalis Kamburelis">
