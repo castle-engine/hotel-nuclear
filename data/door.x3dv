@@ -14,7 +14,7 @@ Transform {
       }
       geometry DEF DoorText Text {
         fontStyle DEF FS FontStyle {
-          size 0.21
+          size 0.18
           justify "MIDDLE"
           style "BOLD"
         }
