@@ -224,15 +224,15 @@ begin
   if DesktopCamera then
   begin
     Player.Camera.MouseLook := true;
-    Window.TouchInterface := etciNone;
+    Window.TouchInterface := tiNone;
   end else
   begin
     { TODO: for some reason, this is broken since progress bar.
       Instead set TouchInterface explicitly.
-    Window.AutomaticWalkTouchCtl := etciCtlWalkCtlRotate;
+    Window.AutomaticWalkTouchCtl := tiCtlWalkCtlRotate;
     Window.AutomaticTouchInterface := true; }
 
-    Window.TouchInterface := etciCtlWalkCtlRotate;
+    Window.TouchInterface := tiCtlWalkCtlRotate;
   end;
 
   ResourceAlien := Resources.FindName('Alien') as TWalkAttackCreatureResource;
