@@ -8,6 +8,7 @@
   author="Michalis Kamburelis">
   <icons>
     <icon path="store-graphics/icon.ico" />
+    <icon path="store-graphics/icon.png" />
   </icons>
   <version value="1.0.0" code="3" />
   <package>

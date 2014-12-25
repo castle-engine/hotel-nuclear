@@ -227,7 +227,7 @@ begin
     Window.TouchInterface := tiNone;
   end else
   begin
-    { TODO: for some reason, this is broken since progress bar.
+    { TODO: for some reason, this breaks after game is restarted.
       Instead set TouchInterface explicitly.
     Window.AutomaticWalkTouchCtl := tiCtlWalkCtlRotate;
     Window.AutomaticTouchInterface := true; }
