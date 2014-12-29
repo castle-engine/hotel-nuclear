@@ -59,7 +59,6 @@ begin
   InitializeLog(Version);
   {$endif}
 
-  Application.Initialize;
   Window.OpenAndRun;
   Config.Save;
 end.

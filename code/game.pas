@@ -62,10 +62,7 @@ begin
   Notifications.VerticalMargin := 0;
 
   ButtonsAdd;
-end;
 
-procedure WindowOpen(Container: TUIContainer);
-begin
   GameBegin(Level);
 end;
 
@@ -105,7 +102,6 @@ initialization
 
   { create Window and initialize Window callbacks }
   Window := TCastleWindowTouch.Create(Application);
-  Window.OnOpen := @WindowOpen;
   Window.OnPress := @WindowPress;
   Window.OnUpdate := @WindowUpdate;
   Window.OnResize := @WindowResize;
