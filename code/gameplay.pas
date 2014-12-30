@@ -227,12 +227,8 @@ begin
     Window.TouchInterface := tiNone;
   end else
   begin
-    { TODO: for some reason, this breaks after game is restarted.
-      Instead set TouchInterface explicitly.
     Window.AutomaticWalkTouchCtl := tiCtlWalkCtlRotate;
-    Window.AutomaticTouchInterface := true; }
-
-    Window.TouchInterface := tiCtlWalkCtlRotate;
+    Window.AutomaticTouchInterface := true;
   end;
 
   ResourceAlien := Resources.FindName('Alien') as TWalkAttackCreatureResource;
