@@ -54,10 +54,8 @@ begin
   Window.ParseParameters;
   Parameters.Parse(Options, @OptionProc, nil);
 
-  {$ifdef UNIX}
   { Note: do this after handling options, to handle --version first }
   InitializeLog(Version);
-  {$endif}
 
   Window.OpenAndRun;
   Config.Save;
