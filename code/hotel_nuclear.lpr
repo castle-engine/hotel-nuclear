@@ -39,7 +39,7 @@ begin
   case OptionNum of
     0: begin
          WritelnStr(Version);
-         ProgramBreak;
+         Halt;
        end;
     1: DesktopCamera := false;
     else raise EInternalError.Create('OptionProc');
