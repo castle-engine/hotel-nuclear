@@ -49,7 +49,7 @@ end;
 begin
   Config.Load;
 
-  SoundEngine.ParseParameters; { after Config.Load, to be able to turn off sound }
+  SoundEngine.ParseParameters; // do this after Config.Load, so command-line overrides config value
   Window.FullScreen := true;
   Window.ParseParameters;
   Parameters.Parse(Options, @OptionProc, nil);
