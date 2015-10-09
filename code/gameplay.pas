@@ -111,8 +111,8 @@ var
   LineNum, I, X, Y: Integer;
 begin
   if Player.Dead then
-    GLFadeRectangle(ContainerRect, Red, 1.0) else
-    GLFadeRectangle(ContainerRect, Player.FadeOutColor, Player.FadeOutIntensity);
+    GLFadeRectangle(ParentRect, Red, 1.0) else
+    GLFadeRectangle(ParentRect, Player.FadeOutColor, Player.FadeOutIntensity);
 
   R := Rectangle(UIMargin, ContainerHeight - UIMargin - 120, 40, 120);
   DrawRectangle(R.Grow(2), Vector4Single(1.0, 0.5, 0.5, 0.2));
