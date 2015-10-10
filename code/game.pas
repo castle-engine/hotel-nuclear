@@ -55,11 +55,6 @@ begin
   Levels.AddFromFile(ApplicationData('level.xml'));
 
   Window.Controls.InsertFront(Notifications);
-  Notifications.HorizontalPosition := hpLeft;
-  Notifications.VerticalPosition := vpUp;
-  Notifications.MaxMessages := 1; // otherwise Notifications.PositionX, PositionY would not work perfectly
-  Notifications.HorizontalMargin := 0;
-  Notifications.VerticalMargin := 0;
 
   ButtonsAdd;
 

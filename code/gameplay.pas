@@ -108,7 +108,7 @@ const
     'elevator' );
 var
   R: TRectangle;
-  LineNum, I, X, Y: Integer;
+  I, X, Y: Integer;
 begin
   if Player.Dead then
     GLFadeRectangle(ParentRect, Red, 1.0) else
@@ -123,33 +123,33 @@ begin
     DrawRectangle(R, Vector4Single(1.0, 0, 0, 0.9));
   end;
 
-  LineNum := 1;
+  Y := ContainerHeight;
 
-  UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight), Gray,
+  Y -= UIMargin + UIFont.RowHeight;
+  UIFont.Print(R.Right + UIMargin, Y, Gray,
     Format('FPS: %f (real : %f). Level: %d / %d',
     [Window.Fps.FrameTime, Window.Fps.RealTime, Level, MaxLevel]));
-  Inc(LineNum);
 
-  UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
+  Y -= UIMargin + UIFont.RowHeight;
+  UIFont.Print(R.Right + UIMargin, Y,
     PossessedColor[Possessed], PossessedName[Possessed]);
-  Inc(LineNum);
 
+  Y -= UIMargin + UIFont.RowHeight;
   { note: show this even when Player.Dead, since that's where you usually have time to read this... }
   if (CurrentRoom <> nil) and
      ( ( (CurrentRoom.RoomType = rtAlien) and (Possessed = posHuman) ) or
        ( (CurrentRoom.RoomType = rtHuman) and (Possessed = posAlien) ) ) then
   begin
-    UIFont.Print(R.Right + UIMargin, ContainerHeight - LineNum * (UIMargin + UIFont.RowHeight),
+    UIFont.Print(R.Right + UIMargin, Y,
       Red, Format('You entered room owned by "%s" as "%s", the air is not breathable! You''re dying!',
       [RoomTypeName[CurrentRoom.RoomType], PossessedNameShort[Possessed] ]));
   end;
-  Inc(LineNum);
 
-  Notifications.PositionX := R.Right + UIMargin;
-  Notifications.PositionY := - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - UIMargin;
-  Inc(LineNum);
+  { at the bottom, show Notifications }
+  Notifications.Anchor(hpLeft, R.Right + UIMargin);
+  Notifications.Anchor(vpTop, -(ContainerHeight - Y));
 
-  Y := ContainerHeight - (LineNum - 1) * (UIMargin + UIFont.RowHeight) - InventoryImageSize;
+  Y := R.Bottom - UIMargin;
   for I := 0 to Player.Inventory.Count - 1 do
   begin
     X := UIMargin + I * (InventoryImageSize + UIMargin);
@@ -241,6 +241,7 @@ begin
   Notifications.Color := PossessedColor[Possessed];
   Notifications.Clear;
   Notifications.CollectHistory := true;
+  Notifications.MaxMessages := 2; // these many fit
   Notifications.Exists := true;
 
   { spawn MinCreaturesInRooms initially, and later only at crossroads.

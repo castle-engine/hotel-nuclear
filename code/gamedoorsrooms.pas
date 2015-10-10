@@ -377,7 +377,6 @@ begin
     SoundEngine.Sound(stPlayerInteractFailed);
   end else
   begin
-    Notifications.Clear; // remove old messages, to not confuse the player: it is ok to open now
     GoEndPosition;
     CurrentOpenDoor := Self;
     Room.InsideExists := true;
