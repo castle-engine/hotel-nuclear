@@ -49,7 +49,6 @@ var
 
 procedure ButtonsAdd;
 procedure ButtonsUpdate;
-procedure ButtonsResize;
 
 const
   MaxLevel = 4;
@@ -93,12 +92,16 @@ begin
 end;
 
 procedure ButtonsAdd;
+const
+  Margin = 16;
 begin
   RestartButton := TRestartButton.Create(Application);
   RestartButton.Caption := 'RESTART';
   RestartButton.Exists := false; // good default
   RestartButton.MinWidth := 200;
   RestartButton.MinHeight := 100;
+  RestartButton.Anchor(hpMiddle);
+  RestartButton.Anchor(vpBottom, vpMiddle, Margin div 2);
   Window.Controls.InsertFront(RestartButton);
 
   NextLevelButton := TNextLevelButton.Create(Application);
@@ -106,6 +109,8 @@ begin
   NextLevelButton.Exists := false; // good default
   NextLevelButton.MinWidth := RestartButton.MinWidth;
   NextLevelButton.MinHeight := RestartButton.MinHeight;
+  NextLevelButton.Anchor(hpMiddle);
+  NextLevelButton.Anchor(vpTop, vpMiddle, -Margin div 2);
   Window.Controls.InsertFront(NextLevelButton);
 
   RestartCongratsButton := TRestartCongratsButton.Create(Application);
@@ -113,11 +118,15 @@ begin
   RestartCongratsButton.Exists := false; // good default
   RestartCongratsButton.MinWidth := RestartButton.MinWidth;
   RestartCongratsButton.MinHeight := RestartButton.MinHeight;
+  RestartCongratsButton.Anchor(hpMiddle);
+  RestartCongratsButton.Anchor(vpTop, vpMiddle, -Margin div 2);
   Window.Controls.InsertFront(RestartCongratsButton);
 
   BecomeAGhostButton := TBecomeAGhostButton.Create(Application);
   BecomeAGhostButton.Caption := 'Back to ghost form [G]';
   BecomeAGhostButton.Exists := false; // good default
+  BecomeAGhostButton.Anchor(hpRight, -Margin div 2);
+  BecomeAGhostButton.Anchor(vpTop, vpTop, -Margin div 2);
   Window.Controls.InsertFront(BecomeAGhostButton);
 end;
 
@@ -146,21 +155,6 @@ begin
     { it is actually not clickable on desktop with mouse look, but it shows G key }
     BecomeAGhostButton.Exists := (Player <> nil) and (not Player.Dead) and (Possessed <> posGhost);
   end;
-end;
-
-procedure ButtonsResize;
-const
-  Margin = 16;
-begin
-  RestartButton.AlignHorizontal;
-  RestartButton.AlignVertical(prBottom, prMiddle, Margin div 2);
-  NextLevelButton.AlignHorizontal;
-  NextLevelButton.AlignVertical(prTop, prMiddle, -Margin div 2);
-  RestartCongratsButton.AlignHorizontal;
-  RestartCongratsButton.AlignVertical(prTop, prMiddle, -Margin div 2);
-
-  BecomeAGhostButton.AlignHorizontal(prRight, prRight, -Margin div 2);
-  BecomeAGhostButton.AlignVertical(prTop, prTop, -Margin div 2);
 end;
 
 end.

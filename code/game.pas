@@ -61,11 +61,6 @@ begin
   GameBegin(Level);
 end;
 
-procedure WindowResize(Container: TUIContainer);
-begin
-  ButtonsResize;
-end;
-
 procedure WindowUpdate(Container: TUIContainer);
 begin
   GameUpdate(Container.Fps.UpdateSecondsPassed);
@@ -77,7 +72,7 @@ begin
   if Event.IsKey(K_F5) then
     Window.SaveScreen(FileNameAutoInc(ApplicationName + '_screen_%d.png'));
   if Event.IsKey(K_Escape) then
-    Application.Quit;
+    Application.Terminate;
   if Event.IsKey(K_8) then
     NextLevelButton.DoClick;
   GamePress(Event);
@@ -99,7 +94,6 @@ initialization
   Window := TCastleWindowTouch.Create(Application);
   Window.OnPress := @WindowPress;
   Window.OnUpdate := @WindowUpdate;
-  Window.OnResize := @WindowResize;
   Window.FpsShowOnCaption := true;
 //  Window.AntiAliasing := aa4SamplesNicer; // much slower
   Application.MainWindow := Window;
