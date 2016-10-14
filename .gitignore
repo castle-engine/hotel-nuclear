@@ -1,1 +1,5 @@
+*~
+*.o
+*.ppu
 hotel_nuclear
+hotel_nuclear.exe
