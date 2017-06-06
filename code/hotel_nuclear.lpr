@@ -19,7 +19,7 @@
 program hotel_nuclear;
 
 {$ifdef MSWINDOWS}
-  {$R ../automatic-windows-resources.res}
+  {$R automatic-windows-resources.res}
 {$endif MSWINDOWS}
 
 uses CastleWindow, CastleConfig, CastleParameters, CastleLog, CastleUtils,
