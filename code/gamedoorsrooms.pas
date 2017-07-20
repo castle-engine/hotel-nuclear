@@ -146,10 +146,10 @@ begin
   FRotateZ := ARotateZ;
   if FRotateZ then
   begin
-    Rotation := Vector4Single(0, 1, 0, Pi);
-    Center := Vector3Single(-RoomSizeX / 2, 0, RoomSizeZ / 2);
+    Rotation := Vector4(0, 1, 0, Pi);
+    Center := Vector3(-RoomSizeX / 2, 0, RoomSizeZ / 2);
   end;
-  Translation := Vector3Single(X, 0, Z);
+  Translation := Vector3(X, 0, Z);
 end;
 
 destructor TRoom.Destroy;
@@ -162,12 +162,12 @@ procedure TRoom.Instantiate(const AWorld: T3DWorld);
 
   procedure AddKey(const AWorld: T3DWorld);
   var
-    Position: TVector3Single;
+    Position: TVector3;
     ItemResource: TItemResource;
   begin
     if HasKey then
     begin
-      Position := LocalToOutside(Vector3Single(-0.385276, 0.625180, 10.393058));
+      Position := LocalToOutside(Vector3(-0.385276, 0.625180, 10.393058));
       ItemResource := KeyResource(Key);
       ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
     end;
@@ -209,7 +209,7 @@ begin
   Door := TDoor.Create(Owner);
   Add(Door);
   Door.MoveTime := 1.0;
-  Door.TranslationEnd := Vector3Single(0, 2.92, 0);
+  Door.TranslationEnd := Vector3(0, 2.92, 0);
   Door.StayOpenTime := 2.0;
   Door.Room := Self;
 
@@ -230,7 +230,7 @@ end;
 
 function TRoom.PlayerInside: boolean;
 begin
-  Result := BoundingBox.PointInside(Player.Position);
+  Result := BoundingBox.Contains(Player.Position);
 end;
 
 function TRoom.GetInsideExists: boolean;
@@ -241,12 +241,12 @@ end;
 function TRoom.PlayerInsideElevator: boolean;
 const
   LocalElevatorBox: TBox3D = (Data: (
-    (-4.36, -2.50, 5.15),
-    (-2.56, 5.34, 6.95)
+    (Data: (-4.36, -2.50, 5.15)),
+    (Data: (-2.56, 5.34, 6.95))
   ));
 begin
   Result := (RoomType = rtElevator) and
-    LocalElevatorBox.Translate(Translation).PointInside(Player.Position);
+    LocalElevatorBox.Translate(Translation).Contains(Player.Position);
 end;
 
 procedure TRoom.SetInsideExists(const Value: boolean);

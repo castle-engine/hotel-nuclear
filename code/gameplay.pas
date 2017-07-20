@@ -71,7 +71,7 @@ begin
       { Better not, confuses color of doors:
       NavInfo := SceneManager.MainScene.NavigationInfoStack.Top as TKambiNavigationInfoNode;
       HeadlightNode :=  NavInfo.FdHeadLightNode.Value as TPointLightNode;
-      HeadlightNode.FdColor.Send(Vector3SingleCut(PossessedColor[Value]));
+      HeadlightNode.FdColor.Send(PossessedColor[Value].XYZ);
       }
       Notifications.Color := PossessedColor[Value];
       SoundEngine.Sound(stSquish);
@@ -111,16 +111,16 @@ var
   I, X, Y: Integer;
 begin
   if Player.Dead then
-    GLFadeRectangle(ParentRect, Red, 1.0) else
-    GLFadeRectangle(ParentRect, Player.FadeOutColor, Player.FadeOutIntensity);
+    GLFadeRectangleDark(ParentRect, Red, 1.0) else
+    GLFadeRectangleDark(ParentRect, Player.FadeOutColor, Player.FadeOutIntensity);
 
   R := Rectangle(UIMargin, ContainerHeight - UIMargin - 120, 40, 120);
-  DrawRectangle(R.Grow(2), Vector4Single(1.0, 0.5, 0.5, 0.2));
+  DrawRectangle(R.Grow(2), Vector4(1.0, 0.5, 0.5, 0.2));
   if not Player.Dead then
   begin
     R.Height := Clamped(Round(
       MapRange(Player.Life, 0, Player.MaxLife, 0, R.Height)), 0, R.Height);
-    DrawRectangle(R, Vector4Single(1.0, 0, 0, 0.9));
+    DrawRectangle(R, Vector4(1.0, 0, 0, 0.9));
   end;
 
   Y := ContainerHeight;
@@ -219,7 +219,7 @@ begin
   Map := TMap.Create(Level, SceneManager.Items, SceneManager);
   SceneManager.Items.Add(Map);
 
-  Player.Position := Vector3Single(Map.PlayerX, Player.Position[1], Map.PlayerZ);
+  Player.Position := Vector3(Map.PlayerX, Player.Position[1], Map.PlayerZ);
 
   if DesktopCamera then
   begin

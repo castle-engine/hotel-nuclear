@@ -26,7 +26,7 @@ type
   TMap = class(T3DTransform)
   public
     PlayerX, PlayerZ: Single;
-    SpawnPoints: TVector3SingleList;
+    SpawnPoints: TVector3List;
     MinCreaturesInRooms, MinCreaturesAtCrossroads: Cardinal;
     RoomsX, RoomsZ: Integer;
     Rooms: array of array of TRoom;
@@ -50,7 +50,7 @@ uses SysUtils,
 
 constructor TMap.Create(const Level: Cardinal; const AWorld: T3DWorld; const AOwner: TComponent);
 
-  procedure SetupBorder(const Move: TVector3Single; const Name: string);
+  procedure SetupBorder(const Move: TVector3; const Name: string);
   var
     Scene: TCastleScene;
     Transform: T3DTransform;
@@ -76,7 +76,7 @@ var
 begin
   inherited Create(AOwner);
 
-  SpawnPoints := TVector3SingleList.Create;
+  SpawnPoints := TVector3List.Create;
 
   case Level of
     0: begin
@@ -145,7 +145,7 @@ begin
         begin
           SpawnX := PosX - CorridorSize / 2 - RoomSizeX;
           SpawnZ := Z * RoomSizeZ + CorridorSize / 2;
-          SpawnPoints.Add(Vector3Single(SpawnX, 0.1, SpawnZ));
+          SpawnPoints.Add(Vector3(SpawnX, 0.1, SpawnZ));
 
           if (X = Division1) and (Z = 1) then
           begin
@@ -232,10 +232,10 @@ begin
       Rooms[X, Z].Instantiate(AWorld);
     end;
 
-  SetupBorder(Vector3Single(MinX, 0, 0), 'hotel_x_negative.x3d');
-  SetupBorder(Vector3Single(MaxX, 0, 0), 'hotel_x_positive.x3d');
-  SetupBorder(Vector3Single(0, 0, MinZ), 'hotel_z_negative.x3d');
-  SetupBorder(Vector3Single(0, 0, MaxZ), 'hotel_z_positive.x3d');
+  SetupBorder(Vector3(MinX, 0, 0), 'hotel_x_negative.x3d');
+  SetupBorder(Vector3(MaxX, 0, 0), 'hotel_x_positive.x3d');
+  SetupBorder(Vector3(0, 0, MinZ), 'hotel_z_negative.x3d');
+  SetupBorder(Vector3(0, 0, MaxZ), 'hotel_z_positive.x3d');
 end;
 
 destructor TMap.Destroy;
@@ -244,7 +244,7 @@ begin
   inherited;
 end;
 
-function PositionClear(const P: TVector3Single): boolean;
+function PositionClear(const P: TVector3): boolean;
 const
   MinDistanceToCreature = 5.0;
   MinDistanceToPlayer = 7.0;
@@ -278,22 +278,22 @@ begin
     Result := ResourceHuman;
 end;
 
-function RandomDirection: TVector3Single;
+function RandomDirection: TVector3;
 begin
   { any non-zero vector flat in Y }
-  Result := Normalized(Vector3Single(Random + 0.1, 0, Random + 0.1));
+  Result := Vector3(Random + 0.1, 0, Random + 0.1).Normalize;
 end;
 
 function TMap.TrySpawnningInARoom: boolean;
 var
   X, Z: Integer;
-  Position: TVector3Single;
+  Position: TVector3;
 begin
   X := Random(RoomsX);
   Z := Random(RoomsZ);
   if Rooms[X, Z].RoomType = rtElevator then
     Exit(false);
-  Position := Rooms[X, Z].BoundingBox.Middle;
+  Position := Rooms[X, Z].BoundingBox.Center;
   Result := PositionClear(Position);
   if Result then
   begin
@@ -307,7 +307,7 @@ end;
 function TMap.TrySpawnningAtACrossroads: boolean;
 var
   SpawnIndex: Integer;
-  Position: TVector3Single;
+  Position: TVector3;
 begin
   if SpawnPoints.Count = 0 then
     Exit(false);

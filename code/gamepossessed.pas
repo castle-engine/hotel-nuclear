@@ -25,9 +25,9 @@ type
   TPossessed = (posGhost, posAlien, posHuman);
 const
   PossessedColor: array [TPossessed] of TCastleColor =
-  ( (0.5, 0.5, 0.5, 1),
-    (1,   1, 0.2, 1),
-    (0.5, 0.5, 1, 1)
+  ( (Data: (0.5, 0.5, 0.5, 1)),
+    (Data: (1,   1, 0.2, 1)),
+    (Data: (0.5, 0.5, 1, 1))
   );
 
 implementation

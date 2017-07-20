@@ -52,8 +52,8 @@ begin
   begin
     DiffuseColor := (Node as TMaterialNode).FdDiffuseColor;
     { do not modify pure black DiffuseColor, as e.g. on door text }
-    if not PerfectlyZeroVector(DiffuseColor.Value) then
-      DiffuseColor.Send({LerpRgbInHsv}Lerp(Intensity, DiffuseColor.Value, Vector3SingleCut(Color)));
+    if not DiffuseColor.Value.IsPerfectlyZero then
+      DiffuseColor.Send({LerpRgbInHsv}Lerp(Intensity, DiffuseColor.Value, Color.XYZ));
     Nodes.Add(Node);
   end;
 end;
