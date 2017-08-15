@@ -40,7 +40,7 @@ property Possessed: TPossessed read GetPossessed write SetPossessed;
 
 implementation
 
-uses SysUtils,
+uses SysUtils, Math,
   CastleUIControls, CastleRectangles, CastleGLUtils, X3DNodes, CastleLog,
   CastleUtils, CastleRenderer, CastleWindowTouch, CastleControls,
   CastleSoundEngine, CastleCreatures, CastleResources, CastleGameNotifications,
