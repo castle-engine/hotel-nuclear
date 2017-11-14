@@ -91,7 +91,7 @@ type
     property Pushes default false;
 
     function PointingDeviceActivate(const Active: boolean;
-      const Distance: Single): boolean; override;
+      const Distance: Single; const CancelAction: boolean = false): boolean; override;
   end;
 
 var
@@ -337,12 +337,14 @@ begin
 end;
 
 function TDoor.PointingDeviceActivate(const Active: boolean;
-  const Distance: Single): boolean;
+  const Distance: Single; const CancelAction: boolean): boolean;
 const
   DistanceToInteract = 5;
 begin
   Result := inherited;
   if Result then Exit;
+
+  if not Active then Exit;
 
   if Distance > DistanceToInteract then
   begin
