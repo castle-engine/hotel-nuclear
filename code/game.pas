@@ -24,7 +24,7 @@ uses CastleWindowTouch, CastlePlayer, CastleLevels, CastleCreatures,
 implementation
 
 uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
-  CastleControls, CastlePrecalculatedAnimation, CastleGLImages, CastleConfig,
+  CastleControls, CastleGLImages, CastleConfig,
   CastleImages, CastleFilesUtils, CastleKeysMouse, CastleUtils, CastleScene,
   CastleMaterialProperties, CastleResources, CastleGameNotifications, CastleNotifications,
   CastleSceneCore,

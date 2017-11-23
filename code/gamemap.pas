@@ -287,35 +287,36 @@ end;
 function TMap.TrySpawnningInARoom: boolean;
 var
   X, Z: Integer;
-  Position: TVector3;
+  Pos: TVector3;
 begin
   X := Random(RoomsX);
   Z := Random(RoomsZ);
   if Rooms[X, Z].RoomType = rtElevator then
     Exit(false);
-  Position := Rooms[X, Z].BoundingBox.Center;
-  Result := PositionClear(Position);
+  Pos := Rooms[X, Z].BoundingBox.Center;
+  Result := PositionClear(Pos);
   if Result then
   begin
     { spawn resource that can breathe in this room }
     if Rooms[X, Z].RoomType = rtAlien then
-      ResourceAlien.CreateCreature(SceneManager.Items, Position, RandomDirection) else
-      ResourceHuman.CreateCreature(SceneManager.Items, Position, RandomDirection);
+      ResourceAlien.CreateCreature(SceneManager.Items, Pos, RandomDirection)
+    else
+      ResourceHuman.CreateCreature(SceneManager.Items, Pos, RandomDirection);
   end;
 end;
 
 function TMap.TrySpawnningAtACrossroads: boolean;
 var
   SpawnIndex: Integer;
-  Position: TVector3;
+  Pos: TVector3;
 begin
   if SpawnPoints.Count = 0 then
     Exit(false);
   SpawnIndex := Random(SpawnPoints.Count);
-  Position := SpawnPoints[SpawnIndex];
-  Result := PositionClear(Position);
+  Pos := SpawnPoints[SpawnIndex];
+  Result := PositionClear(Pos);
   if Result then
-    RandomResource.CreateCreature(SceneManager.Items, Position, RandomDirection);
+    RandomResource.CreateCreature(SceneManager.Items, Pos, RandomDirection);
 end;
 
 procedure TMap.TrySpawnning;
