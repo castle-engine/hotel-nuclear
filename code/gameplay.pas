@@ -108,7 +108,8 @@ const
     'elevator' );
 var
   R: TRectangle;
-  I, X, Y: Integer;
+  I: Integer;
+  X, Y: Single;
 begin
   if Player.Dead then
     GLFadeRectangleDark(ParentRect, Red, 1.0) else
