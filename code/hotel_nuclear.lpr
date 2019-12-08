@@ -13,17 +13,17 @@
   ----------------------------------------------------------------------------
 }
 
-{$apptype GUI}
-
 { "Hotel Nuclear" standalone game binary. }
 program hotel_nuclear;
 
-{$ifdef MSWINDOWS}
-  {$R automatic-windows-resources.res}
-{$endif MSWINDOWS}
+{$ifdef MSWINDOWS} {$apptype GUI} {$endif}
+
+{ This adds icons and version info for Windows,
+  automatically created by "castle-engine compile". }
+{$ifdef CASTLE_AUTO_GENERATED_RESOURCES} {$R castle-auto-generated-resources.res} {$endif}
 
 uses CastleWindow, CastleConfig, CastleParameters, CastleLog, CastleUtils,
-  CastleSoundEngine, CastleClassUtils,
+  CastleSoundEngine, CastleClassUtils, CastleApplicationProperties,
   Game, GameWindow, GamePlay;
 
 const
@@ -56,7 +56,8 @@ begin
   Parameters.Parse(Options, @OptionProc, nil);
 
   { Note: do this after handling options, to handle --version first }
-  InitializeLog(Version);
+  ApplicationProperties.Version := Version;
+  InitializeLog;
 
   Window.OpenAndRun;
   UserConfig.Save;

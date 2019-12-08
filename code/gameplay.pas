@@ -128,8 +128,8 @@ begin
 
   Y -= UIMargin + UIFont.RowHeight;
   UIFont.Print(R.Right + UIMargin, Y, Gray,
-    Format('FPS: %f (real : %f). Level: %d / %d',
-    [Window.Fps.FrameTime, Window.Fps.RealTime, Level, MaxLevel]));
+    Format('FPS: %s. Level: %d / %d',
+    [Window.Fps.ToString, Level, MaxLevel]));
 
   Y -= UIMargin + UIFont.RowHeight;
   UIFont.Print(R.Right + UIMargin, Y,
@@ -154,7 +154,7 @@ begin
   for I := 0 to Player.Inventory.Count - 1 do
   begin
     X := UIMargin + I * (InventoryImageSize + UIMargin);
-    Player.Inventory[I].Resource.GLImage.Draw(X, Y);
+    Player.Inventory[I].Resource.DrawableImage.Draw(X, Y);
     // S := Player.Inventory[I].Resource.Caption;
     // UIFontSmall.Print(X, Y - UIFontSmall.RowHeight, Gray, S);
   end;
@@ -217,14 +217,14 @@ begin
         ColorizeScene(InsideTemplate[RoomType], PossessedColor[posHuman], 0.5);
     end;
 
-  Map := TMap.Create(Level, SceneManager.Items, SceneManager);
+  Map := TMap.Create(Level, SceneManager.LevelProperties, SceneManager);
   SceneManager.Items.Add(Map);
 
-  Player.Position := Vector3(Map.PlayerX, Player.Position[1], Map.PlayerZ);
+  Player.Translation := Vector3(Map.PlayerX, Player.Translation[1], Map.PlayerZ);
 
   if DesktopCamera then
   begin
-    Player.Camera.MouseLook := true;
+    Player.Navigation.MouseLook := true;
     Window.TouchInterface := tiNone;
   end else
   begin
@@ -276,15 +276,15 @@ begin
           Inc(AliveCreatures);
         if (not Creature.Dead) and (
              (ClosestCreature = nil) or
-             (PointsDistanceSqr(Creature.Position, Player.Position) <
-              PointsDistanceSqr(ClosestCreature.Position, Player.Position)) ) then
+             (PointsDistanceSqr(Creature.Translation, Player.Translation) <
+              PointsDistanceSqr(ClosestCreature.Translation, Player.Translation)) ) then
           ClosestCreature := Creature;
       end;
 
     //Writeln('Alive creatures: ', AliveCreatures);
 
     if (ClosestCreature <> nil) and
-       (PointsDistanceSqr(ClosestCreature.Position, Player.Position) < Sqr(DistanceToPossess)) then
+       (PointsDistanceSqr(ClosestCreature.Translation, Player.Translation) < Sqr(DistanceToPossess)) then
     begin
       if (ClosestCreature.Resource = ResourceAlien) and (Possessed <> posAlien) then
       begin

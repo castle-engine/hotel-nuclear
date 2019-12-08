@@ -19,18 +19,18 @@ unit GameMap;
 interface
 
 uses Classes,
-  CastleVectors, Castle3D, CastleScene, CastleCreatures,
+  CastleVectors, CastleTransform, CastleScene, CastleCreatures, CastleResources,
   GameDoorsRooms;
 
 type
-  TMap = class(T3DTransform)
+  TMap = class(TCastleTransform)
   public
     PlayerX, PlayerZ: Single;
     SpawnPoints: TVector3List;
     MinCreaturesInRooms, MinCreaturesAtCrossroads: Cardinal;
     RoomsX, RoomsZ: Integer;
     Rooms: array of array of TRoom;
-    constructor Create(const Level: Cardinal; const AWorld: T3DWorld;
+    constructor Create(const Level: Cardinal; const LevelProperties: TLevelProperties;
       const AOwner: TComponent); reintroduce;
     destructor Destroy; override;
 
@@ -48,14 +48,15 @@ uses SysUtils,
   CastleFilesUtils, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GameScene, GameSound, GamePlay;
 
-constructor TMap.Create(const Level: Cardinal; const AWorld: T3DWorld; const AOwner: TComponent);
+constructor TMap.Create(const Level: Cardinal; const LevelProperties: TLevelProperties;
+  const AOwner: TComponent);
 
   procedure SetupBorder(const Move: TVector3; const Name: string);
   var
     Scene: TCastleScene;
-    Transform: T3DTransform;
+    Transform: TCastleTransform;
   begin
-    Transform := T3DTransform.Create(AOwner);
+    Transform := TCastleTransform.Create(AOwner);
     Add(Transform);
     Transform.Translation := Move;
 
@@ -229,7 +230,7 @@ begin
     for Z := 0 to RoomsZ - 1 do
     begin
       Add(Rooms[X, Z]);
-      Rooms[X, Z].Instantiate(AWorld);
+      Rooms[X, Z].Instantiate(LevelProperties);
     end;
 
   SetupBorder(Vector3(MinX, 0, 0), 'hotel_x_negative.x3d');
@@ -257,12 +258,12 @@ begin
     if SceneManager.Items[I] is TCreature then
     begin
       Creature := SceneManager.Items[I] as TCreature;
-      D := PointsDistanceSqr(Creature.Position, P);
+      D := PointsDistanceSqr(Creature.Translation, P);
       if D < Sqr(MinDistanceToCreature) then
         Exit(false);
     end;
 
-  D := PointsDistanceSqr(Player.Position, P);
+  D := PointsDistanceSqr(Player.Translation, P);
   if D < Sqr(MinDistanceToPlayer) then
     Exit(false);
 
@@ -299,9 +300,9 @@ begin
   begin
     { spawn resource that can breathe in this room }
     if Rooms[X, Z].RoomType = rtAlien then
-      ResourceAlien.CreateCreature(SceneManager.Items, Pos, RandomDirection)
+      ResourceAlien.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection)
     else
-      ResourceHuman.CreateCreature(SceneManager.Items, Pos, RandomDirection);
+      ResourceHuman.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection);
   end;
 end;
 
@@ -316,7 +317,7 @@ begin
   Pos := SpawnPoints[SpawnIndex];
   Result := PositionClear(Pos);
   if Result then
-    RandomResource.CreateCreature(SceneManager.Items, Pos, RandomDirection);
+    RandomResource.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection);
 end;
 
 procedure TMap.TrySpawnning;

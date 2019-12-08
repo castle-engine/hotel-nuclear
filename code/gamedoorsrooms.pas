@@ -19,7 +19,7 @@ unit GameDoorsRooms;
 interface
 
 uses Classes,
-  Castle3D, CastleScene, X3DNodes, CastleColors, CastleItems,
+  Castle3D, CastleScene, X3DNodes, CastleColors, CastleItems, CastleResources,
   CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GamePossessed;
 
@@ -69,9 +69,9 @@ type
     property Text: TStringList read FText;
 
     { Set above properties and then call @link(Instantiate).
-      AWorld is used to insert eventual items to the world, items for now
-      must be top-level in scene magager hierarchy. }
-    procedure Instantiate(const AWorld: T3DWorld);
+      LevelProperties is used to insert eventual items to the world,
+      items for now must be top-level in scene magager hierarchy. }
+    procedure Instantiate(const LevelProperties: TLevelProperties);
 
     { If this room contains elevator, and player is standing in it. }
     function PlayerInsideElevator: boolean;
@@ -120,7 +120,7 @@ var
 implementation
 
 uses SysUtils,
-  CastleGameNotifications, CastleSoundEngine, X3DFields, CastleResources,
+  CastleGameNotifications, CastleSoundEngine, X3DFields,
   GameScene, GameSound, GamePlay;
 
 function KeyResource(const Key: TKey): TItemResource;
@@ -158,9 +158,9 @@ begin
   inherited;
 end;
 
-procedure TRoom.Instantiate(const AWorld: T3DWorld);
+procedure TRoom.Instantiate(const LevelProperties: TLevelProperties);
 
-  procedure AddKey(const AWorld: T3DWorld);
+  procedure AddKey;
   var
     Position: TVector3;
     ItemResource: TItemResource;
@@ -169,7 +169,7 @@ procedure TRoom.Instantiate(const AWorld: T3DWorld);
     begin
       Position := LocalToOutside(Vector3(-0.385276, 0.625180, 10.393058));
       ItemResource := KeyResource(Key);
-      ItemResource.CreateItem(1).PutOnWorld(AWorld, Position);
+      ItemResource.CreateItem(1).PutOnWorld(LevelProperties, Position);
     end;
   end;
 
@@ -225,12 +225,12 @@ begin
   DoorScene.Spatial := [ssRendering, ssDynamicCollisions];
   DoorScene.ProcessEvents := true;
 
-  AddKey(AWorld);
+  AddKey;
 end;
 
 function TRoom.PlayerInside: boolean;
 begin
-  Result := BoundingBox.Contains(Player.Position);
+  Result := BoundingBox.Contains(Player.Translation);
 end;
 
 function TRoom.GetInsideExists: boolean;
@@ -246,7 +246,7 @@ const
   ));
 begin
   Result := (RoomType = rtElevator) and
-    LocalElevatorBox.Translate(Translation).Contains(Player.Position);
+    LocalElevatorBox.Translate(Translation).Contains(Player.Translation);
 end;
 
 procedure TRoom.SetInsideExists(const Value: boolean);
@@ -281,7 +281,7 @@ procedure TDoor.BeforeTimeIncrease(const NewTime: TFloatTime);
     I: Integer;
   begin
     DoorBox := (inherited BoundingBox).Translate(
-      GetTranslationFromTime(NewTime) - GetTranslation);
+      GetTranslationFromTime(NewTime) - Translation);
 
     Result := false;
 

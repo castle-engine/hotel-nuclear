@@ -34,25 +34,24 @@ uses SysUtils, CastleLog, CastleWindow, CastleProgress, CastleWindowProgress,
 procedure ApplicationInitialize;
 begin
   Progress.UserInterface := WindowProgressInterface;
-  MaterialProperties.URL := ApplicationData('material_properties.xml');
+  MaterialProperties.URL := 'castle-data:/material_properties.xml';
 
   InitializeSound;
 
   //Resources.LoadFromFiles; // cannot search recursively in Android assets
-  Resources.AddFromFile(ApplicationData('creatures/human/resource.xml'));
-  Resources.AddFromFile(ApplicationData('creatures/alien/resource.xml'));
+  Resources.AddFromFile('castle-data:/creatures/human/resource.xml');
+  Resources.AddFromFile('castle-data:/creatures/alien/resource.xml');
 
-  Resources.AddFromFile(ApplicationData('items/key_card/aqua/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/black/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/blue/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/gray/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/green/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/red/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/white/resource.xml'));
-  Resources.AddFromFile(ApplicationData('items/key_card/yellow/resource.xml'));
+  Resources.AddFromFile('castle-data:/items/key_card/aqua/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/black/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/blue/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/gray/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/green/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/red/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/white/resource.xml');
+  Resources.AddFromFile('castle-data:/items/key_card/yellow/resource.xml');
 
-  //Levels.LoadFromFiles; // cannot search recursively in Android assets
-  Levels.AddFromFile(ApplicationData('level.xml'));
+  Levels.LoadFromFiles;
 
   Window.Controls.InsertFront(Notifications);
 
@@ -63,7 +62,7 @@ end;
 
 procedure WindowUpdate(Container: TUIContainer);
 begin
-  GameUpdate(Container.Fps.UpdateSecondsPassed);
+  GameUpdate(Container.Fps.SecondsPassed);
   ButtonsUpdate;
 end;
 

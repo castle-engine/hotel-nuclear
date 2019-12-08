@@ -139,18 +139,18 @@ begin
 
   if (Player <> nil) and Player.Dead then
   begin
-    Player.Camera.MouseLook := false;
+    Player.Navigation.MouseLook := false;
     RestartButton.Exists := true;
   end else
   if (Player <> nil) and (CurrentRoom <> nil) and CurrentRoom.PlayerInsideElevator then
   begin
-    Player.Camera.MouseLook := false;
+    Player.Navigation.MouseLook := false;
     if Level = MaxLevel then
       RestartCongratsButton.Exists := true else
       NextLevelButton.Exists := true;
   end else
   begin
-    Player.Camera.MouseLook := DesktopCamera;
+    Player.Navigation.MouseLook := DesktopCamera;
 
     { it is actually not clickable on desktop with mouse look, but it shows G key }
     BecomeAGhostButton.Exists := (Player <> nil) and (not Player.Dead) and (Possessed <> posGhost);
