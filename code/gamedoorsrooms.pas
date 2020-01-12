@@ -19,8 +19,9 @@ unit GameDoorsRooms;
 interface
 
 uses Classes,
-  Castle3D, CastleScene, X3DNodes, CastleColors, CastleItems, CastleResources,
-  CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils, CastleBoxes,
+  CastleTransform, CastleTransformExtra, CastleScene, X3DNodes, CastleColors, CastleItems,
+  CastleResources, CastleFilesUtils, CastleVectors, CastleSceneCore, CastleTimeUtils,
+  CastleBoxes, CastleLevels,
   GamePossessed;
 
 const
@@ -42,7 +43,7 @@ type
 
   TRoomType = (rtAlien, rtHuman, rtElevator);
 
-  TRoom = class(T3DTransform)
+  TRoom = class(TCastleTransform)
   strict private
     FRoomType: TRoomType;
     FHasKey: boolean;
@@ -71,13 +72,13 @@ type
     { Set above properties and then call @link(Instantiate).
       LevelProperties is used to insert eventual items to the world,
       items for now must be top-level in scene magager hierarchy. }
-    procedure Instantiate(const LevelProperties: TLevelProperties);
+    procedure Instantiate(const Level: TAbstractLevel);
 
     { If this room contains elevator, and player is standing in it. }
     function PlayerInsideElevator: boolean;
   end;
 
-  TDoor = class(T3DLinearMoving)
+  TDoor = class(TCastleLinearMoving)
   public
     StayOpenTime: Single;
 
@@ -158,7 +159,7 @@ begin
   inherited;
 end;
 
-procedure TRoom.Instantiate(const LevelProperties: TLevelProperties);
+procedure TRoom.Instantiate(const Level: TAbstractLevel);
 
   procedure AddKey;
   var
@@ -169,7 +170,7 @@ procedure TRoom.Instantiate(const LevelProperties: TLevelProperties);
     begin
       Position := LocalToOutside(Vector3(-0.385276, 0.625180, 10.393058));
       ItemResource := KeyResource(Key);
-      ItemResource.CreateItem(1).PutOnWorld(LevelProperties, Position);
+      ItemResource.CreateItem(1).PutOnWorld(Level, Position);
     end;
   end;
 
@@ -201,7 +202,7 @@ begin
 
   Outside := TCastleScene.Create(Owner);
   Add(Outside);
-  Outside.Load(ApplicationData('room_outside.x3dv'));
+  Outside.Load('castle-data:/room_outside.x3dv');
   SetAttributes(Outside.Attributes);
   Outside.Spatial := [ssRendering, ssDynamicCollisions];
   Outside.ProcessEvents := true;
@@ -215,7 +216,7 @@ begin
 
   DoorScene := TCastleScene.Create(Owner);
   Door.Add(DoorScene);
-  DoorScene.Load(ApplicationData('door.x3dv'));
+  DoorScene.Load('castle-data:/door.x3dv');
   if FRoomType = rtAlien then
     ColorizeScene(DoorScene, PossessedColor[posAlien], 0.95) else
   if FRoomType = rtHuman then

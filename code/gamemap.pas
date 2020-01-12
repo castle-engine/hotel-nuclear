@@ -24,13 +24,15 @@ uses Classes,
 
 type
   TMap = class(TCastleTransform)
+  strict private
+    FLevel: TAbstractLevel;
   public
     PlayerX, PlayerZ: Single;
     SpawnPoints: TVector3List;
     MinCreaturesInRooms, MinCreaturesAtCrossroads: Cardinal;
     RoomsX, RoomsZ: Integer;
     Rooms: array of array of TRoom;
-    constructor Create(const Level: Cardinal; const LevelProperties: TLevelProperties;
+    constructor Create(const LevelIndex: Cardinal; const ALevel: TAbstractLevel;
       const AOwner: TComponent); reintroduce;
     destructor Destroy; override;
 
@@ -48,7 +50,7 @@ uses SysUtils,
   CastleFilesUtils, CastleSceneCore, CastleTimeUtils, CastleBoxes,
   GameScene, GameSound, GamePlay;
 
-constructor TMap.Create(const Level: Cardinal; const LevelProperties: TLevelProperties;
+constructor TMap.Create(const LevelIndex: Cardinal; const ALevel: TAbstractLevel;
   const AOwner: TComponent);
 
   procedure SetupBorder(const Move: TVector3; const Name: string);
@@ -77,9 +79,10 @@ var
 begin
   inherited Create(AOwner);
 
+  FLevel := ALevel;
   SpawnPoints := TVector3List.Create;
 
-  case Level of
+  case LevelIndex of
     0: begin
          RoomsX := 2;
          RoomsZ := 2;
@@ -230,7 +233,7 @@ begin
     for Z := 0 to RoomsZ - 1 do
     begin
       Add(Rooms[X, Z]);
-      Rooms[X, Z].Instantiate(LevelProperties);
+      Rooms[X, Z].Instantiate(FLevel);
     end;
 
   SetupBorder(Vector3(MinX, 0, 0), 'hotel_x_negative.x3d');
@@ -300,9 +303,9 @@ begin
   begin
     { spawn resource that can breathe in this room }
     if Rooms[X, Z].RoomType = rtAlien then
-      ResourceAlien.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection)
+      ResourceAlien.CreateCreature(FLevel, Pos, RandomDirection)
     else
-      ResourceHuman.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection);
+      ResourceHuman.CreateCreature(FLevel, Pos, RandomDirection);
   end;
 end;
 
@@ -317,7 +320,7 @@ begin
   Pos := SpawnPoints[SpawnIndex];
   Result := PositionClear(Pos);
   if Result then
-    RandomResource.CreateCreature(SceneManager.LevelProperties, Pos, RandomDirection);
+    RandomResource.CreateCreature(FLevel, Pos, RandomDirection);
 end;
 
 procedure TMap.TrySpawnning;
