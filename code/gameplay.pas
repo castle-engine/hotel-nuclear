@@ -198,7 +198,7 @@ begin
   { OpenGL context required from now on }
 
   SceneManager.LoadLevel('hotel');
-  SetAttributes(SceneManager.MainScene.Attributes);
+  SetAttributes(SceneManager.Items.MainScene.Attributes);
 
   for RoomType := Low(TRoomType) to High(TRoomType) do
     if InsideTemplate[RoomType] = nil then

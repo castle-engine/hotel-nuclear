@@ -91,8 +91,8 @@ type
 
     property Pushes default false;
 
-    function PointingDeviceActivate(const Active: boolean;
-      const Distance: Single; const CancelAction: boolean = false): boolean; override;
+    function PointingDevicePress(
+      const Pick: TRayCollisionNode; const Distance: Single): Boolean; override;
   end;
 
 var
@@ -337,15 +337,13 @@ begin
       CurrentRoom := nil;
 end;
 
-function TDoor.PointingDeviceActivate(const Active: boolean;
-  const Distance: Single; const CancelAction: boolean): boolean;
+function TDoor.PointingDevicePress(
+  const Pick: TRayCollisionNode; const Distance: Single): Boolean;
 const
   DistanceToInteract = 5;
 begin
   Result := inherited;
   if Result then Exit;
-
-  if not Active then Exit;
 
   if Distance > DistanceToInteract then
   begin
